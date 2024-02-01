@@ -31,7 +31,7 @@ export default function SignIn() {
         return;
       }
       dispatch(signInSuccess(data));
-      navigate("/");
+      navigate("/designs");
     } catch (error) {
       dispatch(signInFailure(error));
     }

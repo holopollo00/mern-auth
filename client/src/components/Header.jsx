@@ -3,23 +3,39 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <div className="bg-slate-200">
+    <div className="bg-blue-400 text-white shadow dark:bg-gray-800">
       <div
         className="flex justify-between items-center max-w-6xl mx-auto
-      p-3"
+      p-3 h-24"
       >
         <Link to="/">
-          <h1 className="font-bold">Auth App</h1>
+          <h1 className="font-bold text-2xl">Housing Quote</h1>
         </Link>
-        <ul className="flex gap-4">
+        <ul className="flex gap-7 h-16 items-center">
           <Link to="/">
-            <li>Home</li>
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Home
+            </li>
+          </Link>
+          <Link to="/designs">
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Designs
+            </li>
           </Link>
           <Link to="/about">
-            <li>About</li>
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              About
+            </li>
+          </Link>
+          <Link to="/newsblogs">
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              News & Blogs
+            </li>
           </Link>
           <Link to="/sign-in">
-            <li>Sign In</li>
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Sign In
+            </li>
           </Link>
         </ul>
       </div>
