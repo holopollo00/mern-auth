@@ -22,7 +22,7 @@ export default function Designs() {
           </button>
         </div>
       </div>
-      <div className="card-container flex flex-wrap gap-10 ml-36">
+      <div className="card-container flex flex-wrap gap-10 justify-center">
         {mockData.map((house, id) => {
           return (
             <div className="card w-96 shadow-xl rounded-3xl" key={id}>
