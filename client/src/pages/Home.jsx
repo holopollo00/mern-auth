@@ -51,6 +51,9 @@ export default function Home() {
         </article>
       </div>
 
+      <div className="flex justify-center mt-28 text-5xl font-bold">
+        <p>Our features</p>
+      </div>
       <div className="flex flex-wrap justify-center gap-32 mt-28 ml-52 mr-52">
         <div className="flex flex-col items-center w-64">
           <FontAwesomeIcon icon={faPerson} size="4x" />

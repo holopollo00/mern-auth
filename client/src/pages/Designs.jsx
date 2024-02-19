@@ -6,21 +6,12 @@ import {
   faSquarePlus,
   faHouse,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 export default function Designs() {
   return (
     <div className="">
       <div className="flex justify-center my-11 text-5xl font-semibold">
         <h1>Designs</h1>
-      </div>
-      <div className="flex justify-center">
-        <div className="flex justify-evenly items-center mb-10 bg-slate-200 h-16 w-80">
-          <button className="focus:bg-yellow-400 h-12 w-32 focus:text-white">
-            Customizable
-          </button>
-          <button className="focus:bg-yellow-400 h-12 w-32 focus:text-white">
-            Fixed Designs
-          </button>
-        </div>
       </div>
       <div className="card-container flex flex-wrap gap-10 justify-center">
         {mockData.map((house, id) => {
@@ -47,12 +38,16 @@ export default function Designs() {
                 </div>
               </div>
               <div className="flex justify-around pb-5">
-                <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
-                  See details
-                </button>
-                <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
-                  Customize
-                </button>
+                <Link to="/designDetail">
+                  <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
+                    See details
+                  </button>
+                </Link>
+                <Link to="/customDesign">
+                  <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
+                    Customize
+                  </button>
+                </Link>
               </div>
             </div>
           );
