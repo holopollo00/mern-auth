@@ -17,6 +17,7 @@ import Doors from "./components/Doors";
 import YardBricks from "./components/YardBricks";
 import Roofs from "./components/Roofs";
 import DecorateBricks from "./components/DecorateBricks";
+import ProfileRoute from "./components/ProfileRoute";
 
 export default function App() {
   return (
@@ -38,7 +39,9 @@ export default function App() {
         <Route path="/newsblogs" element={<News />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route element={<ProfileRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
       <Footer />
     </BrowserRouter>
