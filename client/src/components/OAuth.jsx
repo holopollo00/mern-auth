@@ -2,10 +2,12 @@ import React from "react";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { signInSuccess } from "../redux/user/userSlice";
 
 export default function OAuth() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -24,6 +26,7 @@ export default function OAuth() {
       });
       const data = await res.json();
       dispatch(signInSuccess(data));
+      navigate("/designs");
     } catch (error) {
       console.log("Cound not login with Google", error);
     }
