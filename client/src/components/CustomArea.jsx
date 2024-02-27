@@ -75,7 +75,7 @@ export default function CustomArea() {
           </li>
         </ul>
       </div>
-      <div className="flex flex-col lg:flex-row lg:space-x-8 css-1ol38f2">
+      <div className="flex flex-col lg:flex-row lg:space-x-8">
         <div className="lg:w-[60%] mb-6 lg:mt-8">
           <img src="https://xaynhanhanh.vn/img/image/goc-tu-van/tu-van/ban-ve-nha-cap-4-mai-thai-3-phong-ngu-1-phong-tho.jpg" />
         </div>
@@ -106,7 +106,7 @@ export default function CustomArea() {
               </div>
             </div>
           </div>
-          <div className="mb-8">
+          <div className="mb-8 mr-5">
             <div className="flex flex-row flex-wrap">
               <div
                 className="

@@ -40,6 +40,7 @@ export default function SignUp() {
           type="text"
           placeholder="Username"
           id="username"
+          required
           className="bg-gray-100 p-3 rounded-lg"
           onChange={handleChange}
         />
@@ -47,6 +48,7 @@ export default function SignUp() {
           type="email"
           placeholder="Email"
           id="email"
+          required
           className="bg-gray-100 p-3 rounded-lg"
           onChange={handleChange}
         />
@@ -54,6 +56,7 @@ export default function SignUp() {
           type="password"
           placeholder="Password"
           id="password"
+          required
           className="bg-gray-100 p-3 rounded-lg"
           onChange={handleChange}
         />
