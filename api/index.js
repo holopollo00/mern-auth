@@ -14,7 +14,7 @@ const swaggerUI = require('swagger-ui-express');
 dotenv.config();
 dotenv.config();
 mongoose
-  .connect('mongodb+srv://trongdat0501:dat0501@mern.v6br9bp.mongodb.net/mern-auth?retryWrites=true&w=majority')
+  .connect(process.env.MONGO)
   .then(() => {
     console.log("Connect to MongoDB");
   })
