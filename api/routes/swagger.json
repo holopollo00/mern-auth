@@ -1,0 +1,88 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Sample API",
+      "description": "This is a sample API",
+      "version": "1.0.0"
+    },
+    
+    "paths": {
+      "/api/auth/signout": {
+        "get": {
+          "summary": "Logout",
+          "responses": {
+            "200": {
+              "description": "Test"
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a new user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "required": ["username", "email"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The newly created user"
+            }
+          }
+        }
+      },
+      "/api/user/": {
+        "get": {
+          "summary": "Test",
+          "responses": {
+            "200": {
+              "description": "Test"
+            }
+          }
+        },
+        "post": {
+          "summary": "Create a new user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  },
+                  "required": ["username", "email"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The newly created user"
+            }
+          }
+        }
+      }
+    }
+  }
+  

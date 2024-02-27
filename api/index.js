@@ -4,10 +4,17 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
+import swaggerDocument from './routes/swagger.json' assert { type: 'json' };
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+const swaggerUI = require('swagger-ui-express');
+
 dotenv.config();
 dotenv.config();
 mongoose
-  .connect(process.env.MONGO)
+  .connect('mongodb+srv://trongdat0501:dat0501@mern.v6br9bp.mongodb.net/mern-auth?retryWrites=true&w=majority')
   .then(() => {
     console.log("Connect to MongoDB");
   })
@@ -21,9 +28,8 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.listen(3000, () => {
-  console.log("Server listening on port 3000!");
-});
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
@@ -36,4 +42,9 @@ app.use((err, req, res, next) => {
     message,
     statusCode,
   });
+});
+
+
+app.listen(3000, () => {
+  console.log("Server listening on port 3000!");
 });
