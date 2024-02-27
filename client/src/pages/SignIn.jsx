@@ -45,6 +45,7 @@ export default function SignIn() {
           type="text"
           placeholder="Email"
           id="email"
+          required
           className="bg-gray-100 p-3 rounded-lg"
           onChange={handleChange}
         />
@@ -52,6 +53,7 @@ export default function SignIn() {
           type="password"
           placeholder="Password"
           id="password"
+          required
           className="bg-gray-100 p-3 rounded-lg"
           onChange={handleChange}
         />
