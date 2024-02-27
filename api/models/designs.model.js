@@ -22,6 +22,9 @@ const designsSchema = new mongoose.Schema({
       ref: "Material",
     },
   ],
+  area: {
+    type: String,
+  },
 });
 
 const Design = mongoose.model("Design", designsSchema);
