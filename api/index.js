@@ -3,7 +3,17 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import materialRoutes from "./routes/material.route.js";
+import sizeRoutes from "./routes/size.route.js";
+import designRoutes from "./routes/design.route.js";
 import cookieParser from "cookie-parser";
+import swaggerDocument from './routes/swagger.json' assert { type: 'json' };
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+const swaggerUI = require('swagger-ui-express');
+
 dotenv.config();
 dotenv.config();
 mongoose
@@ -21,12 +31,14 @@ app.use(express.json());
 
 app.use(cookieParser());
 
-app.listen(3000, () => {
-  console.log("Server listening on port 3000!");
-});
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/material", materialRoutes);
+app.use("/api/size", sizeRoutes);
+app.use("/api/design", designRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -36,4 +48,9 @@ app.use((err, req, res, next) => {
     message,
     statusCode,
   });
+});
+
+
+app.listen(3000, () => {
+  console.log("Server listening on port 3000!");
 });
