@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import materialRoutes from "./routes/material.route.js";
+import sizeRoutes from "./routes/size.route.js";
+import designRoutes from "./routes/design.route.js";
 import cookieParser from "cookie-parser";
 import swaggerDocument from './routes/swagger.json' assert { type: 'json' };
 
@@ -33,6 +36,9 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/material", materialRoutes);
+app.use("/api/size", sizeRoutes);
+app.use("/api/design", designRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

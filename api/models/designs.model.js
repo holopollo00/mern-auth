@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 
-const designsSchema = new mongoose.Schema({
+const designSchema = new mongoose.Schema({
   name: {
-    type: String,
-    required: true,
-  },
-  idea: {
     type: String,
     required: true,
   },
@@ -13,20 +9,25 @@ const designsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  picture: {
-    type: String,
-  },
-  materials: [
+  pictures: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Material",
+      type: String, required: true
+    }
+  ],
+  sizes: [
+    {
+      type: String,
+      required: true,
     },
   ],
-  area: {
-    type: String,
+  room: {
+    type: Number,
+  },
+  floor: {
+    type: Number,
   },
 });
 
-const Design = mongoose.model("Design", designsSchema);
+const Design = mongoose.model("Design", designSchema);
 
 export default Design;
