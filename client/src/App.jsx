@@ -9,7 +9,6 @@ import Footer from "./components/Footer";
 import Designs from "./pages/Designs";
 import News from "./pages/News";
 import DesignDetails from "./pages/DesignDetails";
-import CustomDesign from "./pages/CustomDesignArea";
 import CustomMaterial from "./components/CustomMaterial";
 import CustomDesignArea from "./pages/CustomDesignArea";
 import Windows from "./components/Windows";
@@ -18,6 +17,7 @@ import YardBricks from "./components/YardBricks";
 import Roofs from "./components/Roofs";
 import DecorateBricks from "./components/DecorateBricks";
 import ProfileRoute from "./components/ProfileRoute";
+import NewsDetail from "./pages/NewsDetail";
 
 export default function App() {
   return (
@@ -26,7 +26,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/designs" element={<Designs />} />
-        <Route path="designDetail" element={<DesignDetails />} />
+        <Route path="/designDetail/:id" element={<DesignDetails />} />
         <Route path="/customDesign" element={<CustomDesignArea />} />
         <Route path="/customMaterial" element={<CustomMaterial />}>
           <Route path="windows" element={<Windows />} />
@@ -42,6 +42,7 @@ export default function App() {
         <Route element={<ProfileRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route path="/newsdetail" element={<NewsDetail />} />
       </Routes>
       <Footer />
     </BrowserRouter>
