@@ -1,5 +1,6 @@
 import React from "react";
 import { newsData } from "../../mockdata.js";
+import { Link } from "react-router-dom";
 export default function News() {
   return (
     <div className="">
@@ -24,9 +25,11 @@ export default function News() {
               </div>
 
               <div className="flex justify-around pb-5">
-                <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
-                  See more
-                </button>
+                <Link to="/newsdetail">
+                  <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
+                    See more
+                  </button>
+                </Link>
               </div>
             </div>
           );

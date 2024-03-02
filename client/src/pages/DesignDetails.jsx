@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 export default function DesignDetails() {
   const { id } = useParams();
   const [designDetail, setDesignDetail] = useState(null);
+  const [size, setSize] = useState(null);
 
   useEffect(() => {
     async function fetchDetail() {
@@ -20,8 +21,30 @@ export default function DesignDetails() {
         console.log("Error fetching design detail!");
       }
     }
+
     fetchDetail();
-  }, [id]);
+
+    // Call the size fetching function conditionally after designDetail is set
+    if (designDetail && designDetail.sizes && designDetail.sizes.length > 0) {
+      const firstSizeId = designDetail.sizes[0];
+      // eslint-disable-next-line no-inner-declarations
+      async function fetchSize() {
+        // ... your size fetching logic here using firstSizeId
+        try {
+          const res = await fetch(`/api/size/${firstSizeId}`);
+          if (!res.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await res.json();
+          setSize(data);
+        } catch (error) {
+          console.log("Error fetching size!");
+        }
+      }
+      fetchSize();
+    }
+  }, [designDetail, id]);
+
   return (
     <div className="mt-8">
       <div className="text-4xl font-bold flex justify-center">
@@ -29,8 +52,8 @@ export default function DesignDetails() {
       </div>
       {designDetail ? (
         <div className="flex">
-          <div className="flex justify-center mt-8">
-            <Carousel className="rounded-xl w-3/4 h-[450px]">
+          <div className="flex justify-center mt-8 ml-28">
+            <Carousel className="rounded-xl w-[750px] h-[450px]">
               <img
                 src={designDetail.pictures[0]}
                 alt="image 1"
@@ -48,7 +71,7 @@ export default function DesignDetails() {
               />
             </Carousel>
           </div>
-          <div className="flex gap-32 justify-center mt-14">
+          <div className="flex gap-10 flex-wrap mt-14 ml-16">
             <div className="w-[150px]">
               <p className="text-xl font-bold">Information</p>
               <div className="mt-3 pb-5">
@@ -62,10 +85,19 @@ export default function DesignDetails() {
                 </div>
               </div>
             </div>
-            <div>
+            <div className="w-[300px]">
               <p className="text-xl font-bold">Description</p>
-              <p className="w-96">{designDetail.description}</p>
+              <p className="mt-3">{designDetail.description}</p>
             </div>
+            {size && (
+              <div>
+                <p className="text-xl font-bold">Price</p>
+                <p className="mt-3">
+                  {size.long * size.wide * (size.rawPart + size.finishingPart)}{" "}
+                  VND
+                </p>
+              </div>
+            )}
           </div>
         </div>
       ) : (

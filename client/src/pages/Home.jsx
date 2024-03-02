@@ -23,13 +23,8 @@ export default function Home() {
             Find Your Dream House Today!
           </h1>
           <p className="text-2xl">
-            The best place to get a quote for your future house. Explore
+            The best place to get a quote for your future house.
           </p>
-          <Link to="/sign-in">
-            <button className="bg-blue-500 text-white text-2xl px-4 py-2 mt-4 w-36 rounded-full hover:bg-yellow-400">
-              Now <FontAwesomeIcon icon={faRightLong} />
-            </button>
-          </Link>
         </div>
       </div>
       <div className="grid grid-cols-2 mt-28">

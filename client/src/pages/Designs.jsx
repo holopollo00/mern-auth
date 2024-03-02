@@ -49,7 +49,7 @@ export default function Designs() {
                   <img
                     src={design.pictures[0]}
                     alt="house"
-                    className="rounded-t-3xl"
+                    className="rounded-t-3xl w-full h-[250px] object-cover"
                   />
                 </div>
                 <div className="text-2xl font-semibold ml-5 mt-5">
@@ -63,6 +63,10 @@ export default function Designs() {
                   <div className="flex flex-col justify-center gap-1">
                     <FontAwesomeIcon icon={faHouse} />
                     <p>Floors: {design.floor}</p>
+                  </div>
+                  <div className="flex flex-col justify-center gap-1">
+                    <FontAwesomeIcon icon={faHouse} />
+                    <p>Size:</p>
                   </div>
                 </div>
                 <div className="flex justify-around pb-5">
