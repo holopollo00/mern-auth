@@ -19,20 +19,7 @@ const sizeSchema = new mongoose.Schema(
         image: {
             type: String,
             required: true,
-        },
-        materials: [
-            {
-                _id: {
-                    type: String,
-                    required: true,
-                },
-                quantity: {
-                    type: Number,
-                    required: true,
-                },
-
-            },
-        ],
+        }
     },
     { timestamps: true }
 );

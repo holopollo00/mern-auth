@@ -1,0 +1,42 @@
+#Customize .header {
+    margin-top: 34px;
+    margin-bottom: 34px;
+}
+
+#Customize .item {
+    margin-bottom: 28px;
+}
+
+#Customize .radio {
+    margin-right: 24px;
+}
+
+#Customize .material {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: left;
+}
+
+#Customize .material-item {
+    margin-right: 5%;
+    width: 25%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+}
+
+#Customize .material-item:hover {
+    cursor: pointer;
+}
+
+#Customize .material img {
+    max-width: 150px;
+}
+
+#Customize .material p {
+    width: 100%;
+    text-align: center;
+}
+

@@ -14,14 +14,19 @@ const designSchema = new mongoose.Schema({
       type: String, required: true
     }
   ],
-  sizes: [
-    {
-      type: String,
+  sizeId:  {
+    type: String,
+    required: true,
+  },
+  room: {
+    bedRoom: {
+      type: Number,
       required: true,
     },
-  ],
-  room: {
-    type: Number,
+    restRoom: {
+      type: Number,
+      required: true,
+    },
   },
   floor: {
     type: Number,

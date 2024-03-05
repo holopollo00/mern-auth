@@ -42,35 +42,36 @@ export default function Designs() {
       </div>
       <div className="card-container flex flex-wrap gap-10 justify-center">
         {data &&
-          data.map((design) => {
+          data.map((item) => {
+            console.log(item);
             return (
-              <div className="card w-96 shadow-xl rounded-3xl" key={design._id}>
+              <div className="card w-96 shadow-xl rounded-3xl" key={item.design._id}>
                 <div>
                   <img
-                    src={design.pictures[0]}
+                    src={item.design.pictures[0] ? item.design.pictures[0] : ""}
                     alt="house"
                     className="rounded-t-3xl w-full h-[250px] object-cover"
                   />
                 </div>
                 <div className="text-2xl font-semibold ml-5 mt-5">
-                  {design.name}
+                  {item.design.name}
                 </div>
                 <div className="flex justify-evenly mt-3 pb-5">
                   <div className="flex flex-col justify-center gap-1">
                     <FontAwesomeIcon icon={faBed} />
-                    <p>Bedrooms: {design.room}</p>
+                    <p>Bedrooms: {item.design.room.bedRoom}</p>
                   </div>
                   <div className="flex flex-col justify-center gap-1">
                     <FontAwesomeIcon icon={faHouse} />
-                    <p>Floors: {design.floor}</p>
+                    <p>Floors: {item.design.floor}</p>
                   </div>
                   <div className="flex flex-col justify-center gap-1">
                     <FontAwesomeIcon icon={faHouse} />
-                    <p>Size:</p>
+                    <p>Size: {item.size.long * item.size.wide} m2</p>
                   </div>
                 </div>
                 <div className="flex justify-around pb-5">
-                  <Link to={`/designDetail/${design._id}`}>
+                  <Link to={`/designDetail/${item.design._id}`}>
                     <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
                       See details
                     </button>

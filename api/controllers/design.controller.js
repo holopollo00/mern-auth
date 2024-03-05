@@ -1,10 +1,20 @@
 import Design from '../models/designs.model.js';
+import Size from '../models/size.model.js';
 
 // Get all designs
 export const getAllDesigns = async (req, res) => {
   try {
     const designs = await Design.find();
-    res.status(200).json(designs);
+    const designList = [];
+    for (const design of designs) {
+      try {
+        const size = await Size.findById(design.sizeId);
+        designList.push({design, size});
+      } catch (error) {
+        console.error("Error fetching size for design:", design.name, error);
+      }
+    }
+    res.status(200).json(designList);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

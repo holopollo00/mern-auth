@@ -24,6 +24,11 @@ export default function Header() {
               Designs
             </li>
           </Link>
+          <Link to="/customizes">
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Customizes
+            </li>
+          </Link>
           <Link to="/about">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               About

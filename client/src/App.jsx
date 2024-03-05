@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Designs from "./pages/Designs";
+import Customizes from "./pages/Customize/Customize";
 import News from "./pages/News";
 import DesignDetails from "./pages/DesignDetails";
 import CustomMaterial from "./components/CustomMaterial";
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/newsblogs" element={<News />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/customizes" element={<Customizes />} />
         <Route element={<ProfileRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>

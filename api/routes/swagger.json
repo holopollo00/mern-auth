@@ -1,88 +1,500 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Sample API",
-      "description": "This is a sample API",
-      "version": "1.0.0"
-    },
-    
-    "paths": {
-      "/api/auth/signout": {
-        "get": {
-          "summary": "Logout",
-          "responses": {
-            "200": {
-              "description": "Test"
-            }
-          }
-        },
-        "post": {
-          "summary": "Create a new user",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "username": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    }
-                  },
-                  "required": ["username", "email"]
-                }
-              }
-            }
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Material API",
+    "description": "API for managing materials"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/"
+    }
+  ],
+  "paths": {
+    "Materials": "Materials",
+    "/material": {
+      "get": {
+        "tags": [
+          "Material"
+        ],
+        "summary": "Get all materials",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
           },
-          "responses": {
-            "201": {
-              "description": "The newly created user"
-            }
+          "500": {
+            "description": "Internal server error"
           }
         }
       },
-      "/api/user/": {
-        "get": {
-          "summary": "Test",
-          "responses": {
-            "200": {
-              "description": "Test"
+      "post": {
+        "tags": [
+          "Material"
+        ],
+        "summary": "Create a new material",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Material"
+              }
             }
           }
         },
-        "post": {
-          "summary": "Create a new user",
-          "requestBody": {
+        "responses": {
+          "200": {
+            "description": "Material created successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/material/{id}": {
+      "get": {
+        "tags": [
+          "Material"
+        ],
+        "summary": "Get material by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
             "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "username": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email"
-                    }
-                  },
-                  "required": ["username", "email"]
-                }
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Material not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Material"
+        ],
+        "summary": "Update material by ID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Material"
               }
             }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material updated successfully"
           },
-          "responses": {
-            "201": {
-              "description": "The newly created user"
+          "404": {
+            "description": "Material not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Material"
+        ],
+        "summary": "Delete material by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Material deleted successfully"
+          },
+          "404": {
+            "description": "Material not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "Sizes": "Sizes",
+    "/size": {
+      "post": {
+        "tags": [
+          "Size"
+        ],
+        "summary": "Create a new size",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Size"
+              }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Size created successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Size"
+        ],
+        "summary": "Get all sizes",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/size/{id}": {
+      "get": {
+        "tags": [
+          "Size"
+        ],
+        "summary": "Get size by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Size not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Size"
+        ],
+        "summary": "Update size by ID",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Size"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Size updated successfully"
+          },
+          "404": {
+            "description": "Size not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Size"
+        ],
+        "summary": "Delete size by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Size deleted successfully"
+          },
+          "404": {
+            "description": "Size not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "Designs": "Designs",
+    "/design": {
+      "get": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Get all designs",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Create a new design",
+        "parameters": [],
+        "requestBody": {
+          "description": "Design object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Design"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Design created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/design/{id}": {
+      "get": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Get design by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Design not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Update design by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Updated design object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Design"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Design updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Design not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Delete design by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Design deleted successfully"
+          },
+          "404": {
+            "description": "Design not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }
     }
+  },
+  "components": {
+    "schemas": {
+      "Material": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "item",
+          "name",
+          "price",
+          "image"
+        ]
+      },
+      "Size": {
+        "type": "object",
+        "properties": {
+          "long": {
+            "type": "number"
+          },
+          "wide": {
+            "type": "number"
+          },
+          "rawPart": {
+            "type": "number"
+          },
+          "finishingPart": {
+            "type": "number"
+          },
+          "image": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "long",
+          "wide",
+          "rawPart",
+          "finishingPart",
+          "image"
+        ]
+      },
+      "Design": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "pictures": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sizeId": {
+            "type": "string"
+          },
+          "room": {
+            "type": "object",
+            "properties": {
+              "bedRoom": {
+                "type": "number",
+                "description": "Number of bedrooms"
+              },
+              "restRoom": {
+                "type": "number",
+                "description": "Number of restrooms"
+              }
+            }
+          },
+          "floor": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "pictures",
+          "sizeId",
+          "room",
+          "floor"
+        ]
+      }
+    }
   }
-  
+}
