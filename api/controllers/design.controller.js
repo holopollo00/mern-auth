@@ -9,7 +9,7 @@ export const getAllDesigns = async (req, res) => {
     for (const design of designs) {
       try {
         const size = await Size.findById(design.sizeId);
-        designList.push({design, size});
+        designList.push({ design, size });
       } catch (error) {
         console.error("Error fetching size for design:", design.name, error);
       }
@@ -24,10 +24,13 @@ export const getAllDesigns = async (req, res) => {
 export const getDesignById = async (req, res) => {
   try {
     const design = await Design.findById(req.params.id);
+    console.log(design._id);
     if (!design) {
       return res.status(404).json({ message: 'Design not found' });
     }
-    res.status(200).json(design);
+    const size = await Size.findById(design.sizeId);
+
+    res.status(200).json({ design, size });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

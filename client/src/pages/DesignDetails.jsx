@@ -6,7 +6,6 @@ import { Link, useParams } from "react-router-dom";
 export default function DesignDetails() {
   const { id } = useParams();
   const [designDetail, setDesignDetail] = useState(null);
-  const [size, setSize] = useState(null);
 
   useEffect(() => {
     async function fetchDetail() {
@@ -21,29 +20,9 @@ export default function DesignDetails() {
         console.log("Error fetching design detail!");
       }
     }
-
     fetchDetail();
-
-    // Call the size fetching function conditionally after designDetail is set
-    if (designDetail && designDetail.sizes && designDetail.sizes.length > 0) {
-      const firstSizeId = designDetail.sizes[0];
-      // eslint-disable-next-line no-inner-declarations
-      async function fetchSize() {
-        // ... your size fetching logic here using firstSizeId
-        try {
-          const res = await fetch(`/api/size/${firstSizeId}`);
-          if (!res.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await res.json();
-          setSize(data);
-        } catch (error) {
-          console.log("Error fetching size!");
-        }
-      }
-      fetchSize();
-    }
-  }, [designDetail, id]);
+    console.log(designDetail);
+  }, []);
 
   return (
     <div className="mt-8">
@@ -55,7 +34,7 @@ export default function DesignDetails() {
           <div className="flex justify-center mt-8 ml-28">
             <Carousel className="rounded-xl w-[750px] h-[450px]">
               <img
-                src={designDetail.pictures[0]}
+                src={designDetail.design.pictures[0] ? designDetail.design.pictures[0] : ""}
                 alt="image 1"
                 className="h-full w-full object-cover"
               />
@@ -77,23 +56,23 @@ export default function DesignDetails() {
               <div className="mt-3 pb-5">
                 <div className="flex gap-2 mb-1">
                   <FontAwesomeIcon icon={faBed} />
-                  <p>Bedrooms: {designDetail.room} </p>
+                  <p>Bedrooms: {designDetail.design.room.bedRoom} </p>
                 </div>
                 <div className="flex gap-3 mb-1">
                   <FontAwesomeIcon icon={faHouse} />
-                  <p>Floors: {designDetail.floor}</p>
+                  <p>Floors: {designDetail.design.floor}</p>
                 </div>
               </div>
             </div>
             <div className="w-[300px]">
               <p className="text-xl font-bold">Description</p>
-              <p className="mt-3">{designDetail.description}</p>
+              <p className="mt-3">{designDetail.design.description}</p>
             </div>
-            {size && (
+            {designDetail.size && (
               <div>
                 <p className="text-xl font-bold">Price</p>
                 <p className="mt-3">
-                  {size.long * size.wide * (size.rawPart + size.finishingPart)}{" "}
+                  {designDetail.size.long * designDetail.size.wide * (designDetail.size.rawPart + designDetail.size.finishingPart)}{" "}
                   VND
                 </p>
               </div>
