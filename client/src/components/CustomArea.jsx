@@ -1,11 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { setCurrentDesign } from "../redux/user/designSlice";
 
 export default function CustomArea() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentDesign = useSelector((state) => state.design.currentDesign);
+  const [size, setSize] = useState();
+  const [selectedSizeId, setSelectedSizeId] = useState(
+    currentDesign.design.sizeId
+  );
+  const [selectedSize, setSelectedSize] = useState(null);
   const handleClick = () => {
     navigate("/designs");
   };
+  const handleChange = async (id) => {
+    setSelectedSizeId(id);
+    try {
+      const res = await fetch(`/api/size/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setSelectedSize(data);
+
+      // Update current design with the fetched size data
+      const updatedDesign = {
+        ...currentDesign,
+        size: data, // Update size with fetched data
+      };
+      dispatch(setCurrentDesign(updatedDesign));
+    } catch (error) {
+      console.log("Error fetching sizes!");
+    }
+  };
+  const calculatePrice = () => {
+    if (!currentDesign.size) return 0;
+    return (
+      currentDesign.size.long *
+      currentDesign.size.wide *
+      (currentDesign.size.rawPart + currentDesign.size.finishingPart)
+    );
+  };
+
+  useEffect(() => {
+    async function fetchSizes() {
+      try {
+        const res = await fetch("/api/size");
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await res.json();
+        setSize(data);
+      } catch (error) {
+        console.log("Error fetching sizes!");
+      }
+    }
+    fetchSizes();
+  }, []);
   return (
     <div>
       <div className="mt-8">
@@ -108,132 +161,41 @@ export default function CustomArea() {
           </div>
           <div className="mb-8 mr-5">
             <div className="flex flex-row flex-wrap">
-              <div
-                className="
+              {size &&
+                size?.map((size) => {
+                  console.log(size);
+                  return (
+                    <div
+                      onClick={() => handleChange(size._id)}
+                      key={size._id}
+                      className="
                 w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
                 cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-between"
-              >
-                Diện tích: R9 x D15
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="
-                w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-start "
-              >
-                Diện tích: R8 x D14
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="
-                w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-between"
-              >
-                Diện tích: R8 x D15
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="
-                w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-between
-                border border-main-7 bg-main-9"
-              >
-                Diện tích: R9 x D14
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="visible text-main-7 css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="
-                w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-between"
-              >
-                Diện tích: R10 x D14
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
-              <div
-                className="
-                w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border flex justify-between"
-              >
-                Diện tích: R10 x D15
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 10 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="invisible css-2rvvjx"
-                >
-                  <path
-                    d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
-                    fill="#fff"
-                  ></path>
-                </svg>
-              </div>
+                    >
+                      Diện tích: R{size.wide} x D{size.long}
+                      <svg
+                        width={20}
+                        height={20}
+                        viewBox="0 0 10 8"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className=""
+                      >
+                        <path
+                          d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                          fill={
+                            selectedSizeId === size._id ? "#797979" : "#fff"
+                          }
+                        ></path>
+                      </svg>
+                    </div>
+                  );
+                })}
             </div>
           </div>
           <div className="flex justify-end items-center mb-6 bg-gray-100 h-16">
             Estimated Price:
-            <span className="font-bold"> 1.000.000.000 VND</span>
+            <span className="font-bold"> {calculatePrice()} VND</span>
           </div>
           <div>
             <Link to="/customMaterial">

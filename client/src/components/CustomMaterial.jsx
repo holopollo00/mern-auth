@@ -1,7 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+import QuoteModal from "./QuoteModal";
 
 export default function CustomMaterial() {
+  const currentDesign = useSelector((state) => state.design.currentDesign);
+  const [materials, setMaterials] = useState();
+  const [quoteModal, setQuoteModal] = useState(false);
+  const handleClose = () => setQuoteModal(false);
+  const [selectedPaintWallId, setSelectedPaintWallId] = useState();
+  const [selectedRoofId, setSelectedRoofId] = useState();
+  const [selectedDoorId, setSelectedDoorId] = useState();
+  const [selectedWindowId, setSelectedWindowId] = useState();
+  const [selectedWallTileId, setSelectedWallTileId] = useState();
+  const [selectedFloorTileId, setSelectedFloorTileId] = useState();
+  const choosePaintWall = (id) => {
+    setSelectedPaintWallId(id);
+  };
+  const chooseRoof = (id) => {
+    setSelectedRoofId(id);
+  };
+  const chooseDoor = (id) => {
+    setSelectedDoorId(id);
+  };
+  const chooseWindow = (id) => {
+    setSelectedWindowId(id);
+  };
+  const chooseWallTile = (id) => {
+    setSelectedWallTileId(id);
+  };
+  const chooseFloorTile = (id) => {
+    setSelectedFloorTileId(id);
+  };
+
+  useEffect(() => {
+    async function fetchMaterial() {
+      try {
+        const res = await fetch("/api/material");
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await res.json();
+        setMaterials(data);
+      } catch (error) {
+        console.log("Error fetching sizes!");
+      }
+    }
+    fetchMaterial();
+  }, []);
   return (
     <div>
       <div className="mt-8">
@@ -72,13 +118,7 @@ export default function CustomMaterial() {
         </ul>
       </div>
       <div className="flex flex-col lg:flex-row lg:space-x-8 css-1ol38f2">
-        <div className="lg:w-[50%] ml-10 mb-6 lg:mt-8">
-          <img
-            className="w-[800px] h-[500px] object-cover"
-            src="https://www.bhg.com/thmb/H9VV9JNnKl-H1faFXnPlQfNprYw=/1799x0/filters:no_upscale():strip_icc()/white-modern-house-curved-patio-archway-c0a4a3b3-aa51b24d14d0464ea15d36e05aa85ac9.jpg"
-          />
-        </div>
-        <div className="lg:w-[40%] 2xl:w-[40%] mt-8">
+        <div className="lg:w-[40%] 2xl:w-[40%] mt-8 ml-32">
           <Link to="/customDesign">
             <button className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 css-dsddds e1h88f600">
               <svg
@@ -105,64 +145,282 @@ export default function CustomMaterial() {
             </div>
           </div>
           <div className="mb-8">
-            <div className="flex flex-row flex-wrap">
-              <Link
-                to="/customMaterial/windows"
-                className="
-                w-full lg:w-[30%] lg:odd:w-[30%] mr-[2%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border"
-              >
-                <div>Windows</div>
-              </Link>
-              <Link
-                to="/customMaterial/doors"
-                className="
-                w-full lg:w-[30%] lg:odd:w-[30%] mr-[2%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border"
-              >
-                <div>Doors</div>
-              </Link>
-              <Link
-                to="/customMaterial/yardbricks"
-                className="
-                w-full lg:w-[30%] lg:odd:w-[30%] mr-[2%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border"
-              >
-                <div>Yard Bricks</div>
-              </Link>
-              <Link
-                to="/customMaterial/roofs"
-                className="
-                w-full lg:w-[30%] lg:odd:w-[30%] mr-[2%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border"
-              >
-                <div>Roofs</div>
-              </Link>
-              <Link
-                to="/customMaterial/decoratebricks"
-                className="
-                w-full lg:w-[30%] lg:odd:w-[30%] mr-[2%] rounded
-                cursor-pointer mb-3 py-3 lg:py-4 px-4 border"
-              >
-                <div>Decorated Bricks</div>
-              </Link>
+            <div className="item">
+              <h5>Paint Wall</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "PaintWall")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => choosePaintWall(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedPaintWallId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
             </div>
-          </div>
-          <div>
-            <Outlet />
+            <div className="item">
+              <h5>Roof</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "Roof")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => chooseRoof(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedRoofId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+            <div className="item">
+              <h5>Door</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "Door")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => chooseDoor(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedDoorId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+            <div className="item">
+              <h5>Window</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "Window")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => chooseWindow(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedWindowId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+            <div className="item">
+              <h5>WallTile</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "WallTile")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => chooseWallTile(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedWallTileId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+            <div className="item">
+              <h5>FloorTile</h5>
+              <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
+                {materials &&
+                  materials
+                    .filter((item) => item.item === "FloorTile")
+                    ?.map((item) => {
+                      return (
+                        <div
+                          onClick={() => chooseFloorTile(item._id)}
+                          className="flex flex-col gap-2 shadow-sm"
+                          key={item._id}
+                        >
+                          <img
+                            src={item.image}
+                            alt=""
+                            className="w-[200px] h-[200px] shadow-sm"
+                          />
+                          <div className="flex justify-between mx-2">
+                            <p>{item.name}</p>
+                            <svg
+                              width={20}
+                              height={20}
+                              viewBox="0 0 10 8"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className=""
+                            >
+                              <path
+                                d="M3.5 6.1 1.4 4l-.7.7 2.8 2.8 6-6-.7-.7-5.3 5.3Z"
+                                fill={
+                                  selectedFloorTileId === item._id
+                                    ? "#797979"
+                                    : "#fff"
+                                }
+                              ></path>
+                            </svg>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
           </div>
           <div className="flex justify-end items-center mb-6 bg-gray-100 h-16">
             Estimated Price:
           </div>
           <div>
-            <Link to="/designDetail">
-              <button className="bg-blue-400 w-full h-12 rounded-xl text-white hover:bg-yellow-500">
-                Finish
-              </button>
-            </Link>
+            <button
+              onClick={() => {
+                setQuoteModal(true);
+                window.scrollTo(0, 0);
+              }}
+              className="bg-blue-400 w-full h-12 rounded-xl text-white hover:bg-yellow-500"
+            >
+              Finish
+            </button>
           </div>
         </div>
       </div>
+      <QuoteModal onClose={handleClose} visible={quoteModal} />
     </div>
   );
 }
