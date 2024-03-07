@@ -25,6 +25,7 @@
     flex-wrap: wrap;
     justify-content: center;
     box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
 }
 
 #Customize .material-item:hover {
@@ -32,11 +33,19 @@
 }
 
 #Customize .material img {
+    margin-top: 5px;
     max-width: 150px;
 }
 
 #Customize .material p {
     width: 100%;
-    text-align: center;
+    margin-top: 12px;
+    margin-left: 24px;
+    font-weight: bold;
+}
+
+#Customize .material .checked {
+    border: 1px solid rgb(66 165 245 / 1);
+
 }
 
