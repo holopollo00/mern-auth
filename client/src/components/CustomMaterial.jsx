@@ -113,8 +113,8 @@ export default function CustomMaterial() {
       selectedMaterials[1].price * 30 +
       selectedMaterials[2].price * 20 +
       selectedMaterials[3].price * 20 +
-      selectedMaterials[4].price * 10 +
-      selectedMaterials[5].price * 10
+      selectedMaterials[4].price * 20 +
+      selectedMaterials[5].price * 20
     );
   };
   useEffect(() => {
