@@ -6,16 +6,19 @@ import { Button, Checkbox, FormControl, FormControlLabel, ImageList, ImageListIt
 import "../Customize/Customize.css";
 export default function Customizes() {
     const [bedRoom, setBedRoom] = useState(1);
+    const [restRoom, setRestRoom] = useState(1);
     const [materials, setMaterials] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const [sizes, setSizes] = useState([]);
+    const [paintWall, setPaintWall] = useState(null);
+    const [roof, setRoof] = useState(null);
+    const [door, setDoor] = useState(null);
+    const [window, setWindow] = useState(null);
+    const [wallTitle, setWallTitle] = useState(null);
+    const [floorTitle, setFloorTitle] = useState(null);
     const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        fetchMaterials();
-        fetchSizes();
-    }, [selectedSize]);
 
     const fetchMaterials = async () => {
         try {
@@ -45,6 +48,57 @@ export default function Customizes() {
         }
     };
 
+    useEffect(() => {
+        fetchSizes();
+        fetchMaterials();
+    }, []);
+
+    useEffect(() => {
+        if (!paintWall && materials) {
+            const paintWall = materials.find(item => item.item === "PaintWall");
+            if (paintWall) {
+                setPaintWall(paintWall);
+            }
+        }
+        if (!roof && materials) {
+            const roof = materials.find(item => item.item === "Roof");
+            if (roof) {
+                setRoof(roof);
+            }
+        }
+        if (!door && materials) {
+            const door = materials.find(item => item.item === "Door");
+            if (door) {
+                setDoor(door);
+            }
+        }
+        if (!window && materials) {
+            const window = materials.find(item => item.item === "Window");
+            if (window) {
+                setWindow(window);
+            }
+        }
+        if (!wallTitle && materials) {
+            const wallTitle = materials.find(item => item.item === "WallTitle");
+            if (wallTitle) {
+                setWallTitle(wallTitle);
+            }
+        }
+        if (!floorTitle && materials) {
+            const floorTitle = materials.find(item => item.item === "FloorTitle");
+            if (floorTitle) {
+                setFloorTitle(floorTitle);
+            }
+        }
+    }, [materials, sizes]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
     return (
         <div className="" id="Customize">
             <div className="flex justify-center my-11 text-5xl font-semibold">
@@ -59,9 +113,8 @@ export default function Customizes() {
                             {
                                 sizes &&
                                 sizes?.map((size, index) => {
-                                    if(!selectedSize) {
-                                        setSelectedSize(sizes[0]);
-                                    }
+
+                                    const isChecked = size?._id == selectedSize?._id;
 
                                     return (
                                         <div className="form-check form-check-inline radio" key={index}>
@@ -69,11 +122,11 @@ export default function Customizes() {
                                                 className="form-check-input"
                                                 type="radio"
                                                 name="inlineRadioOptions"
-                                                id={`inlineRadio${index + 1}`} // Unique IDs for radios
-                                                value={size} // Use size ID as value
+                                                id={size?._id} // Unique IDs for radios
+                                                value={isChecked} // Use size ID as value
                                                 onChange={(event) => setSelectedSize(event.target.value)}
                                             />
-                                            <label className="form-check-label" htmlFor={`inlineRadio${index + 1}`}>
+                                            <label className="form-check-label" htmlFor={size?._id}>
                                                 Square: W{size?.wide} x L{size?.long}
                                             </label>
                                         </div>
@@ -110,7 +163,7 @@ export default function Customizes() {
                                 id="demo-simple-select"
                                 value={bedRoom}
                                 label="Bed Room"
-                                onChange={() => { setBedRoom(bedRoom) }}
+                                onChange={(event) => { setBedRoom(event.target.value) }}
                             >
                                 <MenuItem value={1} onChange={() => { setBedRoom(value) }}>One Room</MenuItem>
                                 <MenuItem value={2} onChange={() => { setBedRoom(value) }}>Two Room</MenuItem>
@@ -122,13 +175,13 @@ export default function Customizes() {
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={bedRoom}
-                                label="Bed Room"
-                                onChange={() => { setBedRoom(bedRoom) }}
+                                value={restRoom}
+                                label="Rest Room"
+                                onChange={(event) => { setRestRoom(event.target.value) }}
                             >
-                                <MenuItem value={1} onChange={() => { setBedRoom(value) }}>One Room</MenuItem>
-                                <MenuItem value={2} onChange={() => { setBedRoom(value) }}>Two Room</MenuItem>
-                                <MenuItem value={3} onChange={() => { setBedRoom(value) }}>Three Room</MenuItem>
+                                <MenuItem value={1} onChange={() => { setRestRoom(value) }}>One Room</MenuItem>
+                                <MenuItem value={2} onChange={() => { setRestRoom(value) }}>Two Room</MenuItem>
+                                <MenuItem value={3} onChange={() => { setRestRoom(value) }}>Three Room</MenuItem>
                             </Select>
                         </FormControl>
                     </div>
@@ -139,9 +192,13 @@ export default function Customizes() {
                             {
                                 materials && materials.filter((item) => item.item === "PaintWall")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={paintWall && paintWall._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setPaintWall(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
@@ -154,9 +211,13 @@ export default function Customizes() {
                             {
                                 materials && materials.filter((item) => item.item === "Roof")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={roof && roof._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setRoof(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
@@ -169,9 +230,13 @@ export default function Customizes() {
                             {
                                 materials && materials.filter((item) => item.item === "Door")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={door && door._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setDoor(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
@@ -184,9 +249,13 @@ export default function Customizes() {
                             {
                                 materials && materials.filter((item) => item.item === "Window")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={window && window._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setWindow(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
@@ -194,14 +263,18 @@ export default function Customizes() {
                         </div>
                     </div>
                     <div className="item">
-                        <h5>WallTile</h5>
+                        <h5>WallTitle</h5>
                         <div className="material">
                             {
-                                materials && materials.filter((item) => item.item === "WallTile")?.map((item, key) => {
+                                materials && materials.filter((item) => item.item === "WallTitle")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={wallTitle && wallTitle._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setWallTitle(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
@@ -209,14 +282,18 @@ export default function Customizes() {
                         </div>
                     </div>
                     <div className="item">
-                        <h5>FloorTile</h5>
+                        <h5>FloorTitle</h5>
                         <div className="material">
                             {
-                                materials && materials.filter((item) => item.item === "FloorTile")?.map((item, key) => {
+                                materials && materials.filter((item) => item.item === "FloorTitle")?.map((item, key) => {
                                     return (
-                                        <div className="material-item">
-                                            <img key={key} src={item.image} alt="" />
-                                            <p>{item.label}</p>
+                                        <div
+                                            className={floorTitle && floorTitle._id === item._id ? "material-item checked" : "material-item"}
+                                            key={key}
+                                            onClick={() => setFloorTitle(item)}
+                                        >
+                                            <img src={item.image} alt="" />
+                                            <p>{item.name}</p>
                                         </div>
                                     )
                                 })
