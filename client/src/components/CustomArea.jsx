@@ -64,7 +64,10 @@ export default function CustomArea() {
       <div className="mt-8">
         <ul className="flex justify-center">
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/designs"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>1. </span>
               Find Your Design
               <svg
@@ -80,10 +83,13 @@ export default function CustomArea() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/customDesign"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>2. </span>
               Customize Area
               <svg
@@ -99,10 +105,13 @@ export default function CustomArea() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/customMaterial"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>3. </span>
               Customize Material
               <svg
@@ -118,10 +127,10 @@ export default function CustomArea() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#">
+            <a href="#" className="no-underline text-black">
               <span>4. </span>
               Finish and Get Quote
             </a>
@@ -135,7 +144,7 @@ export default function CustomArea() {
         <div className="lg:w-[40%] 2xl:w-[40%] mt-8">
           <button
             onClick={handleClick}
-            className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 css-dsddds e1h88f600"
+            className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 no-underline"
           >
             <svg
               viewBox="0 0 22 14"
@@ -153,7 +162,7 @@ export default function CustomArea() {
           <div className="hidden md:flex mb-3 lg:mb-8 pb-4 border-b border-gray-2">
             <div className="flex-col items-start css-0">
               <div className="flex">
-                <a className="font-bold rounded-[2px] px-4 py-1 css-1r5sb5d e1ky27510">
+                <a className="font-bold rounded-[2px] px-4 py-1 no-underline text-black">
                   Customize Area
                 </a>
               </div>

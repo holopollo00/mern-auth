@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import QuoteModal from "./QuoteModal";
+import { updateMaterial } from "../redux/user/materialSlice";
 
 export default function CustomMaterial() {
   const currentDesign = useSelector((state) => state.design.currentDesign);
+  const selectedMaterials = useSelector((state) => state.selectedMaterials);
+  const dispatch = useDispatch();
   const [materials, setMaterials] = useState();
+  const [material, setMaterial] = useState();
   const [quoteModal, setQuoteModal] = useState(false);
   const handleClose = () => setQuoteModal(false);
   const [selectedPaintWallId, setSelectedPaintWallId] = useState();
@@ -14,25 +18,105 @@ export default function CustomMaterial() {
   const [selectedWindowId, setSelectedWindowId] = useState();
   const [selectedWallTileId, setSelectedWallTileId] = useState();
   const [selectedFloorTileId, setSelectedFloorTileId] = useState();
-  const choosePaintWall = (id) => {
+  const choosePaintWall = async (id) => {
     setSelectedPaintWallId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
-  const chooseRoof = (id) => {
+  const chooseRoof = async (id) => {
     setSelectedRoofId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
-  const chooseDoor = (id) => {
+  const chooseDoor = async (id) => {
     setSelectedDoorId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
-  const chooseWindow = (id) => {
+  const chooseWindow = async (id) => {
     setSelectedWindowId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
-  const chooseWallTile = (id) => {
+  const chooseWallTile = async (id) => {
     setSelectedWallTileId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
-  const chooseFloorTile = (id) => {
+  const chooseFloorTile = async (id) => {
     setSelectedFloorTileId(id);
+    try {
+      const res = await fetch(`/api/material/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      setMaterial(data);
+      dispatch(updateMaterial(data));
+    } catch (error) {
+      console.log("Error fetching material!");
+    }
   };
 
+  const calculatePrice = () => {
+    if (!currentDesign.size || !selectedMaterials?.length) return 0;
+    return (
+      currentDesign.size.long *
+        currentDesign.size.wide *
+        (currentDesign.size.rawPart + currentDesign.size.finishingPart) +
+      selectedMaterials[0].price * 20 +
+      selectedMaterials[1].price * 30 +
+      selectedMaterials[2].price * 20 +
+      selectedMaterials[3].price * 20
+      // selectedMaterials[4].price * 10 +
+      // selectedMaterials[5].price * 10
+    );
+  };
   useEffect(() => {
     async function fetchMaterial() {
       try {
@@ -53,7 +137,10 @@ export default function CustomMaterial() {
       <div className="mt-8">
         <ul className="flex justify-center">
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/designs"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>1. </span>
               Find Your Design
               <svg
@@ -69,10 +156,13 @@ export default function CustomMaterial() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/customDesign"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>2. </span>
               Customize Area
               <svg
@@ -88,10 +178,13 @@ export default function CustomMaterial() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="flex items-center">
+            <Link
+              to="/customMaterial"
+              className="flex items-center no-underline text-black hover:opacity-50"
+            >
               <span>3. </span>
               Customize Material
               <svg
@@ -107,20 +200,20 @@ export default function CustomMaterial() {
                   fill="#797979"
                 ></path>
               </svg>
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#">
+            <Link to="/##" className="no-underline text-black">
               <span>4. </span>
               Finish and Get Quote
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
       <div className="flex flex-col lg:flex-row lg:space-x-8 css-1ol38f2">
         <div className="lg:w-[40%] 2xl:w-[40%] mt-8 ml-32">
-          <Link to="/customDesign">
-            <button className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 css-dsddds e1h88f600">
+          <Link to="/customDesign" className="no-underline text-black">
+            <button className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4">
               <svg
                 viewBox="0 0 22 14"
                 fill="none"
@@ -138,7 +231,7 @@ export default function CustomMaterial() {
           <div className="hidden md:flex mb-3 lg:mb-8 pb-4 border-b border-gray-2">
             <div className="flex-col items-start css-0">
               <div className="flex">
-                <a className="font-bold rounded-[2px] px-4 py-1 css-1r5sb5d e1ky27510">
+                <a className="font-bold rounded-[2px] px-4 py-1 no-underline text-black">
                   Customize Material
                 </a>
               </div>
@@ -405,7 +498,7 @@ export default function CustomMaterial() {
             </div>
           </div>
           <div className="flex justify-end items-center mb-6 bg-gray-100 h-16">
-            Estimated Price:
+            Estimated Price: {calculatePrice()} VND
           </div>
           <div>
             <button

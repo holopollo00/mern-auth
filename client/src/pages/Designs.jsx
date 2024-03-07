@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faHouse, faMaximize } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentDesign } from "../redux/user/designSlice";
 import UseDataFetcher from "../components/DesignPagination/UseDataFetcher";
@@ -11,11 +11,26 @@ export default function Designs() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const startIndex = currentPage * itemsPerPage;
   const endIndex = (currentPage + 1) * itemsPerPage;
 
   const currentPageData = data.slice(startIndex, endIndex);
+
+  const handleCustom = async (id) => {
+    console.log("Clickked Customize button");
+    try {
+      const res = await fetch(`/api/design/${id}`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      dispatch(setCurrentDesign(data));
+      navigate("/customDesign");
+    } catch (error) {
+      console.log("Failed to fetch design to custom!");
+    }
+  };
 
   return (
     <div className="">
@@ -67,11 +82,13 @@ export default function Designs() {
                         See details
                       </button>
                     </Link>
-                    <Link to="/customDesign">
-                      <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
-                        Customize
-                      </button>
-                    </Link>
+
+                    <button
+                      onClick={() => handleCustom(item.design._id)}
+                      className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500"
+                    >
+                      Customize
+                    </button>
                   </div>
                 </div>
               );

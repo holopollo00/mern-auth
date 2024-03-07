@@ -10,36 +10,39 @@ export default function Header() {
         className="flex justify-between items-center max-w-6xl mx-auto
       p-3 h-24"
       >
-        <Link to="/">
-          <h1 className="font-bold text-2xl">Housing Quote</h1>
+        <Link to="/" className="no-underline font-bold text-white">
+          <h1 className="">Housing Quote</h1>
         </Link>
         <ul className="flex gap-7 h-16 items-center">
-          <Link to="/">
+          <Link to="/" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               Home
             </li>
           </Link>
-          <Link to="/designs">
+          <Link to="/designs" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               Designs
             </li>
           </Link>
-          <Link to="/customizes">
+          <Link to="/customizes" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               Customizes
             </li>
           </Link>
-          <Link to="/about">
+          <Link to="/about" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               About
             </li>
           </Link>
-          <Link to="/newsblogs">
+          <Link to="/newsblogs" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               News & Blogs
             </li>
           </Link>
-          <Link to="/profile">
+          <Link
+            to="/profile"
+            className="no-underline font-bold text-2xl text-white"
+          >
             {currentUser ? (
               <img
                 src={currentUser.profilePicture}
