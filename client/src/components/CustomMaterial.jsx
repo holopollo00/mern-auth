@@ -112,9 +112,9 @@ export default function CustomMaterial() {
       selectedMaterials[0].price * 20 +
       selectedMaterials[1].price * 30 +
       selectedMaterials[2].price * 20 +
-      selectedMaterials[3].price * 20
-      // selectedMaterials[4].price * 10 +
-      // selectedMaterials[5].price * 10
+      selectedMaterials[3].price * 20 +
+      selectedMaterials[4].price * 10 +
+      selectedMaterials[5].price * 10
     );
   };
   useEffect(() => {
@@ -415,7 +415,7 @@ export default function CustomMaterial() {
               <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
                 {materials &&
                   materials
-                    .filter((item) => item.item === "WallTile")
+                    .filter((item) => item.item === "WallTitle")
                     ?.map((item) => {
                       return (
                         <div
@@ -458,7 +458,7 @@ export default function CustomMaterial() {
               <div className="flex gap-10 w-[1300px] mb-5 mt-3 justify-evenly">
                 {materials &&
                   materials
-                    .filter((item) => item.item === "FloorTile")
+                    .filter((item) => item.item === "FloorTitle")
                     ?.map((item) => {
                       return (
                         <div

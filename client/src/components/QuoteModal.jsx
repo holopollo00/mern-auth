@@ -20,9 +20,9 @@ export default function QuoteModal({ visible, onClose }) {
       selectedMaterials[0].price * 20 +
       selectedMaterials[1].price * 30 +
       selectedMaterials[2].price * 20 +
-      selectedMaterials[3].price * 20
-      // selectedMaterials[4].price * 10 +
-      // selectedMaterials[5].price * 10
+      selectedMaterials[3].price * 20 +
+      selectedMaterials[4].price * 20 +
+      selectedMaterials[5].price * 20
     );
   };
   return (
@@ -35,7 +35,7 @@ export default function QuoteModal({ visible, onClose }) {
         Estimate the rough and finished parts of the house -{" "}
         {currentDesign.design.name}
       </div>
-      <Card className="h-[500px] w-[600px]">
+      <Card className="h-[550px] w-[600px]">
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -295,7 +295,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[4].item} - {selectedMaterials[4].name} */}
+                  {selectedMaterials[4].item} - {selectedMaterials[4].name}
                 </Typography>
               </td>
               <td className>
@@ -304,7 +304,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[4].price} */}
+                  {selectedMaterials[4].price}
                 </Typography>
               </td>
               <td className>
@@ -313,7 +313,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* 20 */}
+                  20
                 </Typography>
               </td>
               <td className>
@@ -322,7 +322,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[4].price * 20} */}
+                  {selectedMaterials[4].price * 20}
                 </Typography>
               </td>
             </tr>
@@ -333,7 +333,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[5].item} - {selectedMaterials[5].name} */}
+                  {selectedMaterials[5].item} - {selectedMaterials[5].name}
                 </Typography>
               </td>
               <td className>
@@ -342,7 +342,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[5].price} */}
+                  {selectedMaterials[5].price}
                 </Typography>
               </td>
               <td className>
@@ -351,7 +351,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* 20 */}
+                  20
                 </Typography>
               </td>
               <td className>
@@ -360,7 +360,7 @@ export default function QuoteModal({ visible, onClose }) {
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {/* {selectedMaterials[5].price * 20} */}
+                  {selectedMaterials[5].price * 20}
                 </Typography>
               </td>
             </tr>
