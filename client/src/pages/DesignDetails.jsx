@@ -26,20 +26,12 @@ export default function DesignDetails() {
     }
     fetchDetail();
   }, []);
-<<<<<<< HEAD
   console.log(designDetail);
 
   return (
     <div className="mt-8">
       <div className="text-4xl font-bold flex justify-center">
         Design Details - {designDetail && designDetail.design.name}
-=======
-console.log(designDetail);
-  return (
-    <div className="mt-8">
-      <div className="text-4xl font-bold flex justify-center">
-        Design Details - {designDetail?.design.name}
->>>>>>> 2873fc3e9866b413ba1e60776b28d1453d05aeb6
       </div>
       {designDetail ? (
         <div className="flex">
@@ -55,33 +47,30 @@ console.log(designDetail);
                 className="h-full w-full object-cover"
               />
               <img
-<<<<<<< HEAD
-                src={designDetail.design.pictures[1]}
-                alt="image 2"
-                className="h-full w-full object-cover"
-              />
-              <img
-                src={designDetail.design.pictures[2]}
-                alt="image 3"
-                className="h-full w-full object-cover"
-              />
-              <img
-                src={designDetail.design.pictures[3]}
-                alt="image 3"
-=======
-                src={designDetail.design.pictures[1] ? designDetail.design.pictures[1] : ""}
+                src={
+                  designDetail.design.pictures[1]
+                    ? designDetail.design.pictures[1]
+                    : ""
+                }
                 alt="image 1"
                 className="h-full w-full object-cover"
               />
               <img
-                src={designDetail.design.pictures[2] ? designDetail.design.pictures[2] : ""}
+                src={
+                  designDetail.design.pictures[2]
+                    ? designDetail.design.pictures[2]
+                    : ""
+                }
                 alt="image 1"
                 className="h-full w-full object-cover"
               />
               <img
-                src={designDetail.design.pictures[3] ? designDetail.design.pictures[3] : ""}
+                src={
+                  designDetail.design.pictures[3]
+                    ? designDetail.design.pictures[3]
+                    : ""
+                }
                 alt="image 1"
->>>>>>> 2873fc3e9866b413ba1e60776b28d1453d05aeb6
                 className="h-full w-full object-cover"
               />
             </Carousel>
@@ -99,22 +88,17 @@ console.log(designDetail);
                   <p>Floors: {designDetail.design.floor}</p>
                 </div>
                 <div className="flex gap-3 mb-1">
-<<<<<<< HEAD
                   <FontAwesomeIcon icon={faMaximize} />
                   <p>
-                    Size: {designDetail.size.long * designDetail.size.wide} m2
+                    Size: {designDetail.size.long * designDetail.size.wide} m2 -
+                    R{designDetail.size.wide} X R{designDetail.size.long}
                   </p>
-=======
-                  <FontAwesomeIcon icon={faHouse} />
-                  <p>Size: {(designDetail.size.long) * (designDetail.size.wide)} m2 - R{designDetail.size.wide} x D{designDetail.size.long}</p>
->>>>>>> 2873fc3e9866b413ba1e60776b28d1453d05aeb6
                 </div>
               </div>
             </div>
             {designDetail.size && (
               <div>
-<<<<<<< HEAD
-                <p className="text-xl font-bold">Price</p>
+                <p className="text-xl font-bold">EXPECTED QUOTE</p>
                 <p className="mt-3">
                   {designDetail.size.long *
                     designDetail.size.wide *
@@ -122,9 +106,6 @@ console.log(designDetail);
                       designDetail.size.finishingPart)}{" "}
                   VND
                 </p>
-=======
-                <p className="text-xl font-bold">EXPECTED QUOTE: {designDetail.size.long * designDetail.size.wide * (designDetail.size.rawPart + designDetail.size.finishingPart)}{" "}VND</p>
->>>>>>> 2873fc3e9866b413ba1e60776b28d1453d05aeb6
               </div>
             )}
             <div className="w-[300px]">
