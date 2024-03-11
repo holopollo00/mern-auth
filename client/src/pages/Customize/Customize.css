@@ -49,3 +49,23 @@
 
 }
 
+.total {
+    display: flex;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    align-items: center;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    white-space: nowrap;
+    margin-top: 24px;
+}
+
+.total-number {
+    font-size: 1.125rem!important;
+    line-height: 1.75rem!important;
+    font-weight: 600;
+    background-color: rgb(34 34 34 / 5%);
+    margin-left: 18px;
+    padding: 6px;
+}

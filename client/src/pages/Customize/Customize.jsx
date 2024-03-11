@@ -2,12 +2,29 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBed, faHouse } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import { Button, Checkbox, FormControl, FormControlLabel, ImageList, ImageListItem, InputLabel, MenuItem, Radio, RadioGroup, Select } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, ImageList, ImageListItem, InputLabel, MenuItem, Modal, Radio, RadioGroup, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import Paper from '@mui/material/Paper';
 import "../Customize/Customize.css";
+
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 900,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
+
+
 export default function Customizes() {
     const [bedRoom, setBedRoom] = useState(1);
     const [restRoom, setRestRoom] = useState(1);
     const [materials, setMaterials] = useState([]);
+    const [selectedFloor, setSelectedFloor] = useState(null);
     const [selectedSize, setSelectedSize] = useState(null);
     const [sizes, setSizes] = useState([]);
     const [paintWall, setPaintWall] = useState(null);
@@ -18,6 +35,10 @@ export default function Customizes() {
     const [floorTitle, setFloorTitle] = useState(null);
     const [loading, setLoading] = useState(null);
     const [error, setError] = useState(null);
+
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
 
     const fetchMaterials = async () => {
@@ -99,6 +120,39 @@ export default function Customizes() {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
+
+    const handleSubmit = () => {
+        const data = {
+            size: selectedSize._id,
+            floor: selectedFloor,
+            room: {
+                bedRoom: bedRoom,
+                restRoom: restRoom
+            },
+            materials: {
+                paintWall: paintWall,
+                roof: roof,
+                door: door,
+                window: window,
+                wallTitle: wallTitle,
+                floorTitle: floorTitle
+            }
+        }
+        console.log(data);
+    };
+
+    function createData(name, calories, fat, carbs, protein) {
+        return { name, calories, fat, carbs, protein };
+    }
+
+    const rows = [
+        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+        createData('Eclair', 262, 16.0, 24, 6.0),
+        createData('Cupcake', 305, 3.7, 67, 4.3),
+        createData('Gingerbread', 356, 16.0, 49, 3.9),
+    ];
+
     return (
         <div className="" id="Customize">
             <div className="flex justify-center my-11 text-5xl font-semibold">
@@ -115,7 +169,6 @@ export default function Customizes() {
                                 sizes?.map((size, index) => {
 
                                     const isChecked = size?._id == selectedSize?._id;
-
                                     return (
                                         <div className="form-check form-check-inline radio" key={index}>
                                             <input
@@ -124,7 +177,7 @@ export default function Customizes() {
                                                 name="inlineRadioOptions"
                                                 id={size?._id} // Unique IDs for radios
                                                 value={isChecked} // Use size ID as value
-                                                onChange={(event) => setSelectedSize(event.target.value)}
+                                                onChange={() => setSelectedSize(size)}
                                             />
                                             <label className="form-check-label" htmlFor={size?._id}>
                                                 Square: W{size?.wide} x L{size?.long}
@@ -138,19 +191,27 @@ export default function Customizes() {
                     <div className="item">
                         <h5>Floor</h5>
                         <div className="form-check form-check-inline radio">
-                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio1" value="option1" defaultChecked></input>
+                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio1" onChange={(event) => {
+                                setSelectedFloor(event.target.value)
+                            }} value="option1" defaultChecked></input>
                             <label className="form-check-label" htmlFor="inlineRadio1">One Floor</label>
                         </div>
                         <div className="form-check form-check-inline radio">
-                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio2" value="option2"></input>
+                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio2" onChange={(event) => {
+                                setSelectedFloor(event.target.value)
+                            }} value="option2"></input>
                             <label className="form-check-label" htmlFor="inlineRadio2">Two Floor</label>
                         </div>
                         <div className="form-check form-check-inline radio">
-                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio3" value="option3"></input>
+                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio3" onChange={(event) => {
+                                setSelectedFloor(event.target.value)
+                            }} value="option3"></input>
                             <label className="form-check-label" htmlFor="inlineRadio3">Three Floor</label>
                         </div>
                         <div className="form-check form-check-inline radio">
-                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio3" value="option3"></input>
+                            <input className="form-check-input" type="radio" name="floorRadioOptions" id="floorRadio3" onChange={(event) => {
+                                setSelectedFloor(event.target.value)
+                            }} value="option3"></input>
                             <label className="form-check-label" htmlFor="inlineRadio3">Four Floor</label>
                         </div>
                     </div>
@@ -301,12 +362,125 @@ export default function Customizes() {
                         </div>
                     </div>
                     <div className="btn-submit">
-                        <Button variant="contained" color="success">
+                        <Button variant="contained" color="success" onClick={() => { handleOpen() }}>
                             Submit
                         </Button>
+                        <Modal
+                            open={open}
+                            onClose={handleClose}
+                            aria-labelledby="modal-modal-title"
+                            aria-describedby="modal-modal-description"
+                        >
+                            <Box sx={style}>
+                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                    Dự đoán phần thô và phần hoàn thiện của căn nhà
+                                </Typography>
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Vật liệu</TableCell>
+                                                    <TableCell align="center">Đơn giá</TableCell>
+                                                    <TableCell align="center">Số lượng</TableCell>
+                                                    <TableCell align="center">Thành tiền</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Phần thô
+                                                    </TableCell>
+                                                    <TableCell align="center"></TableCell>
+                                                    <TableCell align="center">{selectedSize?.wide} x {selectedSize?.long}</TableCell>
+                                                    <TableCell align="center">{selectedSize?.wide*selectedSize?.long*selectedSize?.rawPart}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Phần hoàn thiện
+                                                    </TableCell>
+                                                    <TableCell align="center"></TableCell>
+                                                    <TableCell align="center">{selectedSize?.wide} x {selectedSize?.long}</TableCell>
+                                                    <TableCell align="center">{selectedSize?.wide*selectedSize?.long*selectedSize?.finishingPart}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Sơn hoàn thiện
+                                                    </TableCell>
+                                                    <TableCell align="center">{paintWall.price}</TableCell>
+                                                    <TableCell align="center">145</TableCell>
+                                                    <TableCell align="center">{paintWall.price * 145}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Mái nhà
+                                                    </TableCell>
+                                                    <TableCell align="center">{roof.price}</TableCell>
+                                                    <TableCell align="center">135</TableCell>
+                                                    <TableCell align="center">{roof.price*135}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Cửa đi
+                                                    </TableCell>
+                                                    <TableCell align="center">{door.price}</TableCell>
+                                                    <TableCell align="center">18</TableCell>
+                                                    <TableCell align="center">{door.price*18}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Cửa sổ
+                                                    </TableCell>
+                                                    <TableCell align="center">{window.price}</TableCell>
+                                                    <TableCell align="center">15</TableCell>
+                                                    <TableCell align="center">{window.price*15}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Tường ốp
+                                                    </TableCell>
+                                                    <TableCell align="center">{wallTitle.price}</TableCell>
+                                                    <TableCell align="center">23</TableCell>
+                                                    <TableCell align="center">{wallTitle.price*23}</TableCell>
+                                                </TableRow>
+                                                <TableRow
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        Gạch bông gió
+                                                    </TableCell>
+                                                    <TableCell align="center">{floorTitle.price}</TableCell>
+                                                    <TableCell align="center">7</TableCell>
+                                                    <TableCell align="center">{floorTitle.price*7}</TableCell>
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <div className="total">
+                                        <p className="total-label">Tổng chi phí xây dựng dự tính:</p>
+                                        <p className="total-number">868825000 VNĐ</p>
+                                    </div>
+                                </Typography>
+                            </Box>
+                        </Modal>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }
