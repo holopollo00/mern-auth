@@ -2,45 +2,48 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setCurrentDesign } from "../redux/user/designSlice";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import "../pages/CustomArea.css";
 
 export default function CustomArea() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentDesign = useSelector((state) => state.design.currentDesign);
+  const currentPart = useSelector((state) => state.part.currentPart);
   const [size, setSize] = useState();
-  const [selectedSizeId, setSelectedSizeId] = useState(
-    currentDesign.design.sizeId
-  );
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSizeId, setSelectedSizeId] = useState('');
+  
+  const [bedRoom, setBedRoom] = useState(currentDesign?.bedRoom);
+  const [restRoom, setRestRoom] = useState(currentDesign?.restRoom);
   const handleClick = () => {
     navigate("/designs");
   };
-  const handleChange = async (id) => {
-    setSelectedSizeId(id);
-    try {
-      const res = await fetch(`/api/size/${id}`);
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await res.json();
-      setSelectedSize(data);
 
+  const handleChange = async () => {
+    try {
       // Update current design with the fetched size data
       const updatedDesign = {
         ...currentDesign,
-        size: data, // Update size with fetched data
+        size: size.filter((e) => {
+          if(e._id == selectedSizeId) {
+            return e;
+          }
+        })[0], // Update size with fetched data
+        bedRoom: bedRoom,
+        restRoom: restRoom
       };
       dispatch(setCurrentDesign(updatedDesign));
     } catch (error) {
       console.log("Error fetching sizes!");
     }
   };
+
   const calculatePrice = () => {
-    if (!currentDesign.size) return 0;
+    if (!currentDesign.size || !currentDesign.design) return 0;
     return (
       currentDesign.size.long *
       currentDesign.size.wide *
-      (currentDesign.size.rawPart + currentDesign.size.finishingPart)
+      (currentPart.rawPart + currentPart.finishingPart) * currentDesign.design.floor * 0.7
     );
   };
 
@@ -53,6 +56,11 @@ export default function CustomArea() {
         }
         const data = await res.json();
         setSize(data);
+        if(selectedSizeId == '' && !currentDesign.size?._id) {
+          setSelectedSizeId(data[0]._id);
+        } else if(currentDesign.size?._id) {
+          setSelectedSizeId(currentDesign.size?._id);
+        }
       } catch (error) {
         console.log("Error fetching sizes!");
       }
@@ -60,7 +68,7 @@ export default function CustomArea() {
     fetchSizes();
   }, []);
   return (
-    <div>
+    <div id="CustomArea">
       <div className="mt-8">
         <ul className="flex justify-center">
           <li>
@@ -137,12 +145,8 @@ export default function CustomArea() {
           </li>
         </ul>
       </div>
-      <div className="flex flex-col lg:flex-row lg:space-x-8">
-        <div className="lg:w-[60%] mb-6 lg:mt-8">
-          <img src="https://xaynhanhanh.vn/img/image/goc-tu-van/tu-van/ban-ve-nha-cap-4-mai-thai-3-phong-ngu-1-phong-tho.jpg" />
-        </div>
-        <div className="lg:w-[40%] 2xl:w-[40%] mt-8">
           <button
+          style={{marginLeft: "30px"}}
             onClick={handleClick}
             className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 no-underline"
           >
@@ -159,6 +163,8 @@ export default function CustomArea() {
             </svg>
             Back
           </button>
+      <div className="flex flex-col lg:flex-row lg:space-x-8 container">
+        <div className="mt-8">
           <div className="hidden md:flex mb-3 lg:mb-8 pb-4 border-b border-gray-2">
             <div className="flex-col items-start css-0">
               <div className="flex">
@@ -172,10 +178,9 @@ export default function CustomArea() {
             <div className="flex flex-row flex-wrap">
               {size &&
                 size?.map((size) => {
-                  console.log(size);
                   return (
                     <div
-                      onClick={() => handleChange(size._id)}
+                      onClick={() => setSelectedSizeId(size._id)}
                       key={size._id}
                       className="
                 w-full lg:w-[48%] lg:odd:w-[48%] lg:odd:mr-[4%] rounded
@@ -202,13 +207,103 @@ export default function CustomArea() {
                 })}
             </div>
           </div>
+          <div className="hidden md:flex mb-3 lg:mb-8 pb-4 border-b border-gray-2">
+            <div className="flex-col items-start css-0">
+              <div className="flex">
+                <a className="font-bold rounded-[2px] px-4 py-1 no-underline text-black">
+                  Customize Room
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="mb-8 mr-5">
+            <div className="flex flex-row flex-wrap">
+              
+            <FormControl sx={{ m: 1, minWidth: 140, marginRight: 12 }}>
+              <InputLabel id="demo-simple-select-label">Bed Room</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={bedRoom}
+                label="Bed Room"
+                onChange={(event) => {
+                  setBedRoom(event.target.value);
+                }}
+              >
+                <MenuItem
+                  value={1}
+                  onChange={() => {
+                    setBedRoom(value);
+                  }}
+                >
+                  One Room
+                </MenuItem>
+                <MenuItem
+                  value={2}
+                  onChange={() => {
+                    setBedRoom(value);
+                  }}
+                >
+                  Two Room
+                </MenuItem>
+                <MenuItem
+                  value={3}
+                  onChange={() => {
+                    setBedRoom(value);
+                  }}
+                >
+                  Three Room
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 140 }}>
+              <InputLabel id="demo-simple-select-label">Rest Room</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={restRoom}
+                label="Rest Room"
+                onChange={(event) => {
+                  setRestRoom(event.target.value);
+                }}
+              >
+                <MenuItem
+                  value={1}
+                  onChange={() => {
+                    setRestRoom(value);
+                  }}
+                >
+                  One Room
+                </MenuItem>
+                <MenuItem
+                  value={2}
+                  onChange={() => {
+                    setRestRoom(value);
+                  }}
+                >
+                  Two Room
+                </MenuItem>
+                <MenuItem
+                  value={3}
+                  onChange={() => {
+                    setRestRoom(value);
+                  }}
+                >
+                  Three Room
+                </MenuItem>
+              </Select>
+            </FormControl>
+            </div>
+          </div>
           <div className="flex justify-end items-center mb-6 bg-gray-100 h-16">
             Estimated Price:
             <span className="font-bold"> {calculatePrice()} VND</span>
           </div>
           <div>
             <Link to="/customMaterial">
-              <button className="bg-blue-400 w-full h-12 rounded-xl text-white hover:bg-yellow-500">
+              <button onClick={()=>{
+                handleChange();
+              }} className="bg-blue-400 w-full h-12 rounded-xl text-white hover:bg-yellow-500">
                 Customize Material
               </button>
             </Link>

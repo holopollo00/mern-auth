@@ -19,8 +19,30 @@ import Roofs from "./components/Roofs";
 import DecorateBricks from "./components/DecorateBricks";
 import ProfileRoute from "./components/ProfileRoute";
 import NewsDetail from "./pages/NewsDetail";
+import { setCurrentPart } from "./redux/user/partSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getPart();
+  }, [])
+  
+  const getPart = async () => {
+    try {
+      const res = await fetch(`api/part`);
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await res.json();
+      dispatch(setCurrentPart(data));
+    } catch (error) {
+      console.log("Failed to fetch design to custom!");
+    }
+  };
+
   return (
     <BrowserRouter>
       <Header />

@@ -31,6 +31,24 @@ const designSchema = new mongoose.Schema({
   floor: {
     type: Number,
   },
+  paintWallQuantity: {
+    type: Number,
+  },
+  roofQuantity: {
+    type: Number,
+  },
+  doorQuantity: {
+    type: Number,
+  },
+  windowQuantity: {
+    type: Number,
+  },
+  wallTitleQuantity: {
+    type: Number,
+  },
+  floorTitleQuantity: {
+    type: Number,
+  }
 });
 
 const Design = mongoose.model("Design", designSchema);

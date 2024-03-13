@@ -44,6 +44,7 @@ export default function Customizes() {
   const [restRoom, setRestRoom] = useState(1);
   const [materials, setMaterials] = useState([]);
   const [selectedFloor, setSelectedFloor] = useState(null);
+  const [selectedPart, setSelectedPart] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
   const [sizes, setSizes] = useState([]);
   const [paintWall, setPaintWall] = useState(null);
@@ -269,6 +270,47 @@ export default function Customizes() {
                 Four Floor
               </label>
             </div>
+          </div>
+
+          <div className="item">
+            <h5>Part</h5>
+            <FormControl sx={{ m: 1, minWidth: 140, marginRight: 12 }}>
+              <InputLabel id="demo-simple-select-label">Part</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedPart}
+                label="Part"
+                onChange={(event) => {
+                  setSelectedPart(event.target.value);
+                }}
+              >
+                <MenuItem
+                  value={1}
+                  onChange={() => {
+                    setSelectedPart(value);
+                  }}
+                >
+                  Phần thô
+                </MenuItem>
+                <MenuItem
+                  value={2}
+                  onChange={() => {
+                    setSelectedPart(value);
+                  }}
+                >
+                  Phần hoàn thiện
+                </MenuItem>
+                <MenuItem
+                  value={3}
+                  onChange={() => {
+                    setSelectedPart(value);
+                  }}
+                >
+                  Phần thô và phần hoàn thiện
+                </MenuItem>
+              </Select>
+            </FormControl>
           </div>
           <div className="item">
             <h5>Room</h5>
@@ -524,42 +566,53 @@ export default function Customizes() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            Phần thô
-                          </TableCell>
-                          <TableCell align="center"></TableCell>
-                          <TableCell align="center">
-                            {selectedSize?.wide} x {selectedSize?.long}
-                          </TableCell>
-                          <TableCell align="center">
-                            {selectedSize?.wide *
-                              selectedSize?.long *
-                              selectedSize?.rawPart}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            Phần hoàn thiện
-                          </TableCell>
-                          <TableCell align="center"></TableCell>
-                          <TableCell align="center">
-                            {selectedSize?.wide} x {selectedSize?.long}
-                          </TableCell>
-                          <TableCell align="center">
-                            {selectedSize?.wide *
-                              selectedSize?.long *
-                              selectedSize?.finishingPart}
-                          </TableCell>
-                        </TableRow>
+                        {
+                          (selectedPart == 1 || selectedPart == 3) ?
+                            (
+
+                              <TableRow
+                                sx={{
+                                  "&:last-child td, &:last-child th": { border: 0 },
+                                }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  Phần thô
+                                </TableCell>
+                                <TableCell align="center"></TableCell>
+                                <TableCell align="center">
+                                  {selectedSize?.wide} x {selectedSize?.long}
+                                </TableCell>
+                                <TableCell align="center">
+                                  {selectedSize?.wide *
+                                    selectedSize?.long *
+                                    selectedSize?.rawPart}
+                                </TableCell>
+                              </TableRow>
+                            ) : null
+                        }
+                        {
+                          (selectedPart == 2 || selectedPart == 3) ?
+                            (
+                              <TableRow
+                                sx={{
+                                  "&:last-child td, &:last-child th": { border: 0 },
+                                }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  Phần hoàn thiện
+                                </TableCell>
+                                <TableCell align="center"></TableCell>
+                                <TableCell align="center">
+                                  {selectedSize?.wide} x {selectedSize?.long}
+                                </TableCell>
+                                <TableCell align="center">
+                                  {selectedSize?.wide *
+                                    selectedSize?.long *
+                                    selectedSize?.finishingPart}
+                                </TableCell>
+                              </TableRow>
+                            ) : null
+                        }
                         <TableRow
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },

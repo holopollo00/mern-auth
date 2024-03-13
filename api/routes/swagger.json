@@ -267,6 +267,137 @@
         }
       }
     },
+    "Part": "Part",
+    "/part": {
+      "get": {
+        "tags": [
+          "Part"
+        ],
+        "summary": "Get all designs",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Part"
+        ],
+        "summary": "Create a new raw part",
+        "parameters": [],
+        "requestBody": {
+          "description": "Part object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Part"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Design created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/part/{id}": {
+      "get": {
+        "tags": [
+          "Part"
+        ],
+        "summary": "Get raw part by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Part not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Part"
+        ],
+        "summary": "Update raw part by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "Updated raw part object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Part"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Part updated successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Part not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Part"
+        ],
+        "summary": "Delete design by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Part deleted successfully"
+          },
+          "404": {
+            "description": "Part not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "Designs": "Designs",
     "/design": {
       "get": {
@@ -433,12 +564,6 @@
           "wide": {
             "type": "number"
           },
-          "rawPart": {
-            "type": "number"
-          },
-          "finishingPart": {
-            "type": "number"
-          },
           "image": {
             "type": "string"
           }
@@ -446,8 +571,6 @@
         "required": [
           "long",
           "wide",
-          "rawPart",
-          "finishingPart",
           "image"
         ]
       },
@@ -493,6 +616,21 @@
           "sizeId",
           "room",
           "floor"
+        ]
+      },
+      "Part": {
+        "type": "object",
+        "properties": {
+          "rawPart": {
+            "type": "number"
+          },
+          "finishingPart": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "rawPart",
+          "finishingPart"
         ]
       }
     }

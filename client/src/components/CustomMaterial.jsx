@@ -7,17 +7,18 @@ import { updateMaterial } from "../redux/user/materialSlice";
 export default function CustomMaterial() {
   const currentDesign = useSelector((state) => state.design.currentDesign);
   const selectedMaterials = useSelector((state) => state.selectedMaterials);
+  const currentPart = useSelector((state) => state.part.currentPart);
   const dispatch = useDispatch();
   const [materials, setMaterials] = useState();
   const [material, setMaterial] = useState();
   const [quoteModal, setQuoteModal] = useState(false);
   const handleClose = () => setQuoteModal(false);
-  const [selectedPaintWallId, setSelectedPaintWallId] = useState();
-  const [selectedRoofId, setSelectedRoofId] = useState();
-  const [selectedDoorId, setSelectedDoorId] = useState();
-  const [selectedWindowId, setSelectedWindowId] = useState();
-  const [selectedWallTileId, setSelectedWallTileId] = useState();
-  const [selectedFloorTileId, setSelectedFloorTileId] = useState();
+  const [selectedPaintWallId, setSelectedPaintWallId] = useState('');
+  const [selectedRoofId, setSelectedRoofId] = useState('');
+  const [selectedDoorId, setSelectedDoorId] = useState('');
+  const [selectedWindowId, setSelectedWindowId] = useState('');
+  const [selectedWallTileId, setSelectedWallTileId] = useState('');
+  const [selectedFloorTileId, setSelectedFloorTileId] = useState('');
   const choosePaintWall = async (id) => {
     setSelectedPaintWallId(id);
     try {
@@ -104,17 +105,17 @@ export default function CustomMaterial() {
   };
 
   const calculatePrice = () => {
-    if (!currentDesign.size || !selectedMaterials?.length) return 0;
+    if (!currentDesign.size || !selectedMaterials?.length || !currentPart) return 0;
     return (
       currentDesign.size.long *
-        currentDesign.size.wide *
-        (currentDesign.size.rawPart + currentDesign.size.finishingPart) +
-      selectedMaterials[0].price * 20 +
-      selectedMaterials[1].price * 30 +
-      selectedMaterials[2].price * 20 +
-      selectedMaterials[3].price * 20 +
-      selectedMaterials[4].price * 20 +
-      selectedMaterials[5].price * 20
+      currentDesign.size.wide *
+      (currentPart.rawPart + currentPart.finishingPart) +
+      selectedMaterials[0]?.price * currentDesign.design?.doorQuantity +
+      selectedMaterials[1]?.price * currentDesign.design?.floorTitleQuantity +
+      selectedMaterials[2]?.price * currentDesign.design?.wallTitleQuantity +
+      selectedMaterials[3]?.price * currentDesign.design?.paintWallQuantity +
+      selectedMaterials[4]?.price * currentDesign.design?.roofQuantity +
+      selectedMaterials[5]?.price * currentDesign.design?.windowQuantity
     );
   };
   useEffect(() => {
@@ -244,7 +245,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "PaintWall")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedPaintWallId == '' && index == 0) {
+                        setSelectedPaintWallId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => choosePaintWall(item._id)}
@@ -287,7 +291,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "Roof")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedRoofId == '' && index == 0) {
+                        setSelectedRoofId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => chooseRoof(item._id)}
@@ -330,7 +337,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "Door")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedDoorId == '' && index == 0) {
+                        setSelectedDoorId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => chooseDoor(item._id)}
@@ -373,7 +383,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "Window")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedWindowId == '' && index == 0) {
+                        setSelectedWindowId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => chooseWindow(item._id)}
@@ -416,7 +429,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "WallTitle")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedWallTileId == '' && index == 0) {
+                        setSelectedWallTileId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => chooseWallTile(item._id)}
@@ -459,7 +475,10 @@ export default function CustomMaterial() {
                 {materials &&
                   materials
                     .filter((item) => item.item === "FloorTitle")
-                    ?.map((item) => {
+                    ?.map((item, index) => {
+                      if (selectedFloorTileId == '' && index == 0) {
+                        setSelectedFloorTileId(item._id);
+                      }
                       return (
                         <div
                           onClick={() => chooseFloorTile(item._id)}

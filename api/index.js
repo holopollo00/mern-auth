@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.route.js";
 import materialRoutes from "./routes/material.route.js";
 import sizeRoutes from "./routes/size.route.js";
 import designRoutes from "./routes/design.route.js";
+import partRoutes from "./routes/part.route.js";
 import cookieParser from "cookie-parser";
 import swaggerDocument from './routes/swagger.json' assert { type: 'json' };
 
@@ -17,7 +18,8 @@ const swaggerUI = require('swagger-ui-express');
 dotenv.config();
 dotenv.config();
 mongoose
-  .connect(process.env.MONGO)
+// .connect(process.env.MONGO)
+  .connect('mongodb+srv://trongdat0501:dat0501@mern.v6br9bp.mongodb.net/mern-auth?retryWrites=true&w=majority')
   .then(() => {
     console.log("Connect to MongoDB");
   })
@@ -39,6 +41,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/material", materialRoutes);
 app.use("/api/size", sizeRoutes);
 app.use("/api/design", designRoutes);
+app.use("/api/part", partRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
