@@ -9,6 +9,7 @@ import {
   deleteUserFailure,
   signOut,
 } from "../redux/user/userSlice";
+import axios from "axios";
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
@@ -59,7 +60,9 @@ export default function Profile() {
   };
   const handleSignOut = async () => {
     try {
-      await fetch("/api/auth/signout");
+      await axios.post("http://localhost:3000/api/auth/logout", currentUser._id, {
+            headers: { token: `Bearer ${currentUser.accessToken}` },
+        });
       dispatch(signOut());
     } catch (error) {
       console.log(error);

@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearBlueprint } from "../redux/user/blueprintSlice";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   return (
     <div className="bg-blue-400 text-white shadow dark:bg-gray-800">
       <div
@@ -39,6 +41,16 @@ export default function Header() {
               News & Blogs
             </li>
           </Link>
+          {(currentUser?.roleID == "User") ? 
+          (<Link to="/blueprint" className="no-underline text-white" 
+          onClick={()=> {
+            dispatch(clearBlueprint())
+          }}>
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Blueprint
+            </li>
+          </Link>) 
+          : null}
           <Link
             to="/profile"
             className="no-underline font-bold text-2xl text-white"

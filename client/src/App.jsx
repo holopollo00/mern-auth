@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import axios from "axios";
 import Home from "./pages/Home";
+import Blueprint from "./pages/Blueprint/Blueprint";
 import About from "./pages/About";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
@@ -22,9 +24,11 @@ import NewsDetail from "./pages/NewsDetail";
 import { setCurrentPart } from "./redux/user/partSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function App() {
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     getPart();
@@ -32,7 +36,7 @@ export default function App() {
   
   const getPart = async () => {
     try {
-      const res = await fetch(`api/part`);
+      const res = await axios.get(`api/part`);
       if (!res.ok) {
         throw new Error("Network response was not ok");
       }
@@ -49,6 +53,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/designs" element={<Designs />} />
+        <Route path="/Blueprint" element={(currentUser?.roleID == "User") ? <Blueprint /> : <Home/>} />
         <Route path="/designDetail/:id" element={<DesignDetails />} />
         <Route path="/customDesign" element={<CustomDesignArea />} />
         <Route path="/customMaterial" element={<CustomMaterial />}>

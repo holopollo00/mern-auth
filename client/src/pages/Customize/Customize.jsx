@@ -1,20 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBed, faHouse } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
-  ImageList,
-  ImageListItem,
   InputLabel,
   MenuItem,
   Modal,
-  Radio,
-  RadioGroup,
   Select,
   Table,
   TableBody,
@@ -22,9 +12,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from "@mui/material";
+import axios from "axios";
 import Paper from "@mui/material/Paper";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import "../Customize/Customize.css";
 
 const style = {
@@ -40,11 +34,18 @@ const style = {
 };
 
 export default function Customizes() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentBlueprint } = useSelector((state) => state.blueprint);
+  const { currentUser } = useSelector((state) => state.user);
+  const currentPart = useSelector((state) => state.part.currentPart);
+
+  const [blueprintId, setBlueprintId] = useState(currentBlueprint?._id);
   const [bedRoom, setBedRoom] = useState(1);
   const [restRoom, setRestRoom] = useState(1);
   const [materials, setMaterials] = useState([]);
-  const [selectedFloor, setSelectedFloor] = useState(null);
-  const [selectedPart, setSelectedPart] = useState(1);
+  const [selectedFloor, setSelectedFloor] = useState((currentBlueprint.floor) ? currentBlueprint.floor : 1);
+  const [selectedPart, setSelectedPart] = useState((currentBlueprint.floor) ? 3 : 1);
   const [selectedSize, setSelectedSize] = useState(null);
   const [sizes, setSizes] = useState([]);
   const [paintWall, setPaintWall] = useState(null);
@@ -55,6 +56,8 @@ export default function Customizes() {
   const [floorTitle, setFloorTitle] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
+  const [wide, setWide] = useState((currentBlueprint) ? currentBlueprint.wide : 0);
+  const [long, setLong] = useState((currentBlueprint) ? currentBlueprint.long : 0);
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -63,7 +66,6 @@ export default function Customizes() {
   const fetchMaterials = async () => {
     try {
       const res = await fetch("/api/material");
-
       if (!res.ok) {
         throw new Error("Network response was not Ok!");
       }
@@ -93,43 +95,73 @@ export default function Customizes() {
     fetchMaterials();
   }, []);
 
-  useEffect(() => {
+  const getBlueprint = async () => {
     if (!paintWall && materials) {
-      const paintWall = materials.find((item) => item.item === "PaintWall");
-      if (paintWall) {
-        setPaintWall(paintWall);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.paintWall}`);
+      let PaintWall = res?.data;
+      if (!PaintWall) {
+        PaintWall = materials.find((item) => item.item === "PaintWall");
+      }
+      if (PaintWall) {
+        setPaintWall(PaintWall);
       }
     }
+
     if (!roof && materials) {
-      const roof = materials.find((item) => item.item === "Roof");
-      if (roof) {
-        setRoof(roof);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.roof}`);
+      let Roof = res?.data;
+      if (!Roof) {
+        Roof = materials.find((item) => item.item === "Roof");
+      }
+      if (Roof) {
+        setRoof(Roof);
       }
     }
+
     if (!door && materials) {
-      const door = materials.find((item) => item.item === "Door");
-      if (door) {
-        setDoor(door);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.door}`);
+      let Door = res?.data;
+      if (!Door) {
+        Door = materials.find((item) => item.item === "Door");
+      }
+      if (Door) {
+        setDoor(Door);
       }
     }
     if (!window && materials) {
-      const window = materials.find((item) => item.item === "Window");
-      if (window) {
-        setWindow(window);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.window}`);
+      let Window = res?.data;
+      if (!Window) {
+        Window = materials.find((item) => item.item === "Window");
+      }
+      if (Window) {
+        setWindow(Window);
       }
     }
     if (!wallTitle && materials) {
-      const wallTitle = materials.find((item) => item.item === "WallTitle");
-      if (wallTitle) {
-        setWallTitle(wallTitle);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.wallTitle}`);
+      let WallTitle = res?.data;
+      if (!WallTitle) {
+        WallTitle = materials.find((item) => item.item === "WallTitle");
+      }
+      if (WallTitle) {
+        setWallTitle(WallTitle);
       }
     }
     if (!floorTitle && materials) {
-      const floorTitle = materials.find((item) => item.item === "FloorTitle");
-      if (floorTitle) {
-        setFloorTitle(floorTitle);
+      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.floorTitle}`);
+      let FloorTitle = res?.data;
+      if (!FloorTitle) {
+        FloorTitle = materials.find((item) => item.item === "FloorTitle");
+      }
+      if (FloorTitle) {
+        setFloorTitle(FloorTitle);
       }
     }
+  }
+
+  useEffect(() => {
+    getBlueprint();
   }, [materials, sizes]);
 
   if (loading) {
@@ -140,24 +172,60 @@ export default function Customizes() {
     return <div>Error: {error.message}</div>;
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const data = {
-      size: selectedSize._id,
+      userId: currentUser._id,
+      rawPart: currentPart?.rawPart,
+      finishingPart: currentPart?.finishingPart,
+      wide: wide,
+      long: long,
       floor: selectedFloor,
       room: {
         bedRoom: bedRoom,
         restRoom: restRoom,
       },
       materials: {
-        paintWall: paintWall,
-        roof: roof,
-        door: door,
-        window: window,
-        wallTitle: wallTitle,
-        floorTitle: floorTitle,
+        paintWall: { paintWall, quantity: 0 },
+        roof: { roof, quantity: 0 },
+        door: { door, quantity: 0 },
+        window: { window, quantity: 0 },
+        wallTitle: { wallTitle, quantity: 0 },
+        floorTitle: { floorTitle, quantity: 0 },
       },
     };
-    console.log(data);
+
+    const res = await axios.get(`http://localhost:3000/api/design-save/${blueprintId}`);
+    if (res.data) {
+      try {
+        const response = await axios.put(
+          `http://localhost:3000/api/design-save/${designSaveId}`,
+          updatedData,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        console.log('Design save updated successfully:', response.data);
+
+      } catch (error) {
+        if (error.response) {
+          console.error('Error updating design save:', error.response.data);
+        } else {
+          console.error('Error:', error);
+        }
+      }
+    } else {
+      const response = await axios.post('http://localhost:3000/api/design-save', data, {
+        headers: { token: `Bearer ${currentUser.accessToken}` },
+      });
+      if (response.status === 201) {
+        setSuccessMessage('Your blueprint have been sent!');
+      } else {
+        setErrorMessage('An error occurred. Please try again later.');
+      }
+    }
+    navigate('/blueprint');
   };
 
   function createData(name, calories, fat, carbs, protein) {
@@ -215,11 +283,10 @@ export default function Customizes() {
                 type="radio"
                 name="floorRadioOptions"
                 id="floorRadio1"
+                value={1}
                 onChange={(event) => {
                   setSelectedFloor(event.target.value);
                 }}
-                value="option1"
-                defaultChecked
               ></input>
               <label className="form-check-label" htmlFor="inlineRadio1">
                 One Floor
@@ -234,7 +301,7 @@ export default function Customizes() {
                 onChange={(event) => {
                   setSelectedFloor(event.target.value);
                 }}
-                value="option2"
+                value={2}
               ></input>
               <label className="form-check-label" htmlFor="inlineRadio2">
                 Two Floor
@@ -249,7 +316,7 @@ export default function Customizes() {
                 onChange={(event) => {
                   setSelectedFloor(event.target.value);
                 }}
-                value="option3"
+                value={3}
               ></input>
               <label className="form-check-label" htmlFor="inlineRadio3">
                 Three Floor
@@ -264,7 +331,7 @@ export default function Customizes() {
                 onChange={(event) => {
                   setSelectedFloor(event.target.value);
                 }}
-                value="option3"
+                value={4}
               ></input>
               <label className="form-check-label" htmlFor="inlineRadio3">
                 Four Floor
