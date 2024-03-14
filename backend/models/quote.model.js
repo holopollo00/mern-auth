@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const quoteSchema = new mongoose.Schema(
   {
@@ -27,6 +27,5 @@ const quoteSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Quote = mongoose.model("Quote", quoteSchema);
+module.exports = mongoose.model("Quote", quoteSchema);
 
-export default Quote;

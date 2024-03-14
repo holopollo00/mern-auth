@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { useSelector } from "react-redux";
-import { Card, Typography } from "@material-tailwind/react";
+import { Button, Card, Typography } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = ["Materials", "Price", "Quantities", "Sub Total (VND)"];
 
 export default function QuoteModal({ visible, onClose }) {
+  const { currentUser } = useSelector((state) => state.user);
   const currentDesign = useSelector((state) => state.design.currentDesign);
   const selectedMaterials = useSelector((state) => state.selectedMaterials);
+  const currentPart = useSelector((state) => state.part.currentPart);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  
+  const navigate = useNavigate();
   if (!visible) return null;
   const handleClose = (e) => {
     if (e.target.id === "container") onClose();
@@ -15,27 +23,63 @@ export default function QuoteModal({ visible, onClose }) {
     if (!currentDesign.size || !selectedMaterials?.length) return 0;
     return (
       currentDesign.size.long *
-        currentDesign.size.wide *
-        (currentDesign.size.rawPart + currentDesign.size.finishingPart) +
-      selectedMaterials[0].price * 20 +
-      selectedMaterials[1].price * 30 +
-      selectedMaterials[2].price * 20 +
-      selectedMaterials[3].price * 20 +
-      selectedMaterials[4].price * 20 +
-      selectedMaterials[5].price * 20
+      currentDesign.size.wide *
+      (currentPart?.rawPart + currentPart?.finishingPart) +
+      selectedMaterials[0]?.price * currentDesign.design?.doorQuantity +
+      selectedMaterials[1]?.price * currentDesign.design?.floorTitleQuantity +
+      selectedMaterials[2]?.price * currentDesign.design?.wallTitleQuantity +
+      selectedMaterials[3]?.price * currentDesign.design?.paintWallQuantity +
+      selectedMaterials[4]?.price * currentDesign.design?.roofQuantity +
+      selectedMaterials[5]?.price * currentDesign.design?.windowQuantity
     );
   };
+
+  const handleSubmit = async () => {
+    if (!currentUser) {
+      navigate("/sign-in");
+    } else {
+      const data = {
+        userId: currentUser._id,
+        rawPart: currentPart?.rawPart,
+        finishingPart: currentPart?.finishingPart,
+        wide: currentDesign.size?.wide,
+        long: currentDesign.size?.long,
+        floor: currentDesign.design?.floor,
+        room: {
+          bedRoom: currentDesign.bedRoom,
+          restRoom: currentDesign.restRoom,
+        },
+        materials: {
+          paintWall: { ...selectedMaterials.filter((e) => e.item == "PaintWall")[0], quantity: currentDesign.design?.paintWallQuantity },
+          roof: { ...selectedMaterials.filter((e) => e.item == "Roof")[0], quantity: currentDesign.design?.roofQuantity },
+          door: { ...selectedMaterials.filter((e) => e.item == "Door")[0], quantity: currentDesign.design?.doorQuantity },
+          window: { ...selectedMaterials.filter((e) => e.item == "Window")[0], quantity: currentDesign.design?.windowQuantity },
+          wallTitle: { ...selectedMaterials.filter((e) => e.item == "WallTitle")[0], quantity: currentDesign.design?.wallTitleQuantity },
+          floorTitle: { ...selectedMaterials.filter((e) => e.item == "FloorTitle")[0], quantity: currentDesign.design?.floorTitleQuantity },
+        },
+      };
+      const response = await axios.post('http://localhost:3000/api/design-save', data, {
+        headers: { token: `Bearer ${currentUser.accessToken}` },
+      });
+      if (response.status === 201) {
+        setSuccessMessage('Your blueprint have been sent!');
+        navigate("/blueprint");
+      } else {
+        setErrorMessage('An error occurred. Please try again later.');
+      }
+    }
+  }
   return (
     <div
       id="container"
       onClick={handleClose}
       className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center flex-col"
     >
-      <div className="font-bold bg-white w-[600px] text-center h-[50px] pt-3">
-        Estimate the rough and finished parts of the house -{" "}
-        {currentDesign.design.name}
-      </div>
-      <Card className="h-[550px] w-[600px]">
+      <Card className="h-[700px] w-[900px]">
+        <div className="font-bold bg-white w-[100%] text-center h-[50px] pt-3">
+          Estimate the rough and finished parts of the house -{" "}
+          {currentDesign.design.name}
+        </div>
         <table className="w-full min-w-max table-auto text-left">
           <thead>
             <tr>
@@ -57,7 +101,7 @@ export default function QuoteModal({ visible, onClose }) {
           </thead>
           <tbody>
             <tr>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -66,16 +110,16 @@ export default function QuoteModal({ visible, onClose }) {
                   Raw Part
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {currentDesign.size.rawPart}
+                  {currentPart?.rawPart}
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -84,7 +128,7 @@ export default function QuoteModal({ visible, onClose }) {
                   {currentDesign.size.long} x {currentDesign.size.wide}
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -92,12 +136,12 @@ export default function QuoteModal({ visible, onClose }) {
                 >
                   {currentDesign.size.long *
                     currentDesign.size.wide *
-                    currentDesign.size.rawPart}
+                    currentPart?.rawPart}
                 </Typography>
               </td>
             </tr>
             <tr>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -106,16 +150,16 @@ export default function QuoteModal({ visible, onClose }) {
                   Finshing Part
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
                   className="font-normal pl-10 pt-3"
                 >
-                  {currentDesign.size.finishingPart}
+                  {currentPart?.finishingPart}
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -124,7 +168,7 @@ export default function QuoteModal({ visible, onClose }) {
                   {currentDesign.size.long} x {currentDesign.size.wide}
                 </Typography>
               </td>
-              <td className>
+              <td>
                 <Typography
                   variant="small"
                   color="blue-gray"
@@ -132,244 +176,62 @@ export default function QuoteModal({ visible, onClose }) {
                 >
                   {currentDesign.size.long *
                     currentDesign.size.wide *
-                    currentDesign.size.finishingPart}
+                    currentPart?.finishingPart}
                 </Typography>
               </td>
             </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[0].item} - {selectedMaterials[0].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[0].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  20
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[0].price * 20}
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[1].item} - {selectedMaterials[1].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[1].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  30
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[1].price * 30}
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[2].item} - {selectedMaterials[2].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[2].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  20
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[2].price * 20}
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[3].item} - {selectedMaterials[3].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[3].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  20
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[3].price * 20}
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[4].item} - {selectedMaterials[4].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[4].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  20
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[4].price * 20}
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[5].item} - {selectedMaterials[5].name}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[5].price}
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  20
-                </Typography>
-              </td>
-              <td className>
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-normal pl-10 pt-3"
-                >
-                  {selectedMaterials[5].price * 20}
-                </Typography>
-              </td>
-            </tr>
+            {
+              selectedMaterials &&
+              selectedMaterials?.map((item, index) => {
+                return (
+                  <tr key={index}>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal pl-10 pt-3"
+                      >
+                        {item.item} - {item.name}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal pl-10 pt-3"
+                      >
+                        {item.price}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography variant="small" color="blue-gray" className="font-normal pl-10 pt-3">
+                        {(() => {
+                          const quantity =
+                            currentDesign.design?.[`${item.item.charAt(0).toLowerCase() + item.item.slice(1)}Quantity`] || 0;
+                          return quantity;
+                        })()}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography variant="small" color="blue-gray" className="font-normal pl-10 pt-3">
+                        {(() => {
+                          const quantity =
+                            currentDesign.design?.[`${item.item.charAt(0).toLowerCase() + item.item.slice(1)}Quantity`] || 0;
+                          return quantity * item.price;
+                        })()}
+                      </Typography>
+                    </td>
+                  </tr>
+                );
+              })
+            }
           </tbody>
         </table>
-        <div className="flex justify-between font-bold bg-white w-[600px] text-center h-[50px] pt-3">
+        <div className="flex justify-between font-bold bg-white w-[100%] text-center h-[60px] pt-3 total-estimate">
           Total estimated construction costs:{" "}
           <span>{calculatePrice()} VND</span>
         </div>
+        <Button onClick={() => { handleSubmit() }} style={{ backgroundColor: "green", marginTop: "24px", borderRadius: "0px" }}>Submit</Button>
       </Card>
     </div>
   );

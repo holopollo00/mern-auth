@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const materialSchema = new mongoose.Schema(
   {
@@ -23,6 +23,4 @@ const materialSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Material = mongoose.model("Material", materialSchema);
-
-export default Material;
+module.exports = mongoose.model("Material", materialSchema);

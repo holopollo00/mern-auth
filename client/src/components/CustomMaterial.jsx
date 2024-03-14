@@ -106,7 +106,7 @@ export default function CustomMaterial() {
 
   const calculatePrice = () => {
     if (!currentDesign.size || !selectedMaterials?.length || !currentPart) return 0;
-    return (
+    const total =
       currentDesign.size.long *
       currentDesign.size.wide *
       (currentPart.rawPart + currentPart.finishingPart) +
@@ -116,7 +116,7 @@ export default function CustomMaterial() {
       selectedMaterials[3]?.price * currentDesign.design?.paintWallQuantity +
       selectedMaterials[4]?.price * currentDesign.design?.roofQuantity +
       selectedMaterials[5]?.price * currentDesign.design?.windowQuantity
-    );
+    return total;
   };
   useEffect(() => {
     async function fetchMaterial() {

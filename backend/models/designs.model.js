@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const designSchema = new mongoose.Schema({
   name: {
@@ -51,6 +51,5 @@ const designSchema = new mongoose.Schema({
   }
 });
 
-const Design = mongoose.model("Design", designSchema);
+module.exports = mongoose.model("Design", designSchema);
 
-export default Design;
