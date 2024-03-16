@@ -73,7 +73,7 @@ export default function Profile() {
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <img
-          src={formData.profilePicture || currentUser.profilePicture}
+          src={formData.avatar || currentUser.avatar}
           alt="profile"
           className="h-24 w-24 self-center cursor-pointer 
           rounded-full object-cover mt-2"

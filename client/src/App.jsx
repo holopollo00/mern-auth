@@ -25,6 +25,9 @@ import { setCurrentPart } from "./redux/user/partSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import CustomArea from "./components/CustomArea";
+import AdminHeader from "./components/AdminHeader";
+import AdminBlueprint from "./pages/Blueprint/AdminBlueprint";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -33,7 +36,7 @@ export default function App() {
   useEffect(() => {
     getPart();
   }, [])
-  
+
   const getPart = async () => {
     try {
       const res = await axios.get(`api/part`);
@@ -49,14 +52,19 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Header />
+      {
+        (currentUser?.roleID == "Admin") ?
+          (<AdminHeader />)
+          :
+          (<Header />)
+      }
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/designs" element={<Designs />} />
-        <Route path="/Blueprint" element={(currentUser?.roleID == "User") ? <Blueprint /> : <Home/>} />
-        <Route path="/designDetail/:id" element={<DesignDetails />} />
-        <Route path="/customDesign" element={<CustomDesignArea />} />
-        <Route path="/customMaterial" element={<CustomMaterial />}>
+        <Route path="/designs" element={(currentUser?.roleID == "Admin") ? <Home /> : <Designs />} />
+        <Route path="/Blueprint" element={(currentUser?.roleID == "User") ? <Blueprint /> : <Home />} />
+        <Route path="/designDetail/:id" element={(currentUser?.roleID == "Admin") ? <Home /> : <DesignDetails />} />
+        <Route path="/customDesign" element={(currentUser?.roleID == "Admin") ? <Home /> : <CustomArea />} />
+        <Route path="/customMaterial" element={(currentUser?.roleID == "Admin") ? <Home /> : <CustomMaterial />} >
           <Route path="windows" element={<Windows />} />
           <Route path="doors" element={<Doors />} />
           <Route path="yardbricks" element={<YardBricks />} />
@@ -67,11 +75,13 @@ export default function App() {
         <Route path="/newsblogs" element={<News />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/customizes" element={<Customizes />} />
+        <Route path="/customizes" element={(currentUser?.roleID == "Admin") ? <Home /> : <Customizes />} />
         <Route element={<ProfileRoute />}>
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={(currentUser) ? <Profile /> : <Home />} />
         </Route>
         <Route path="/newsdetail" element={<NewsDetail />} />
+        {/* Admin */}
+        <Route path="/admin-blueprint" element={(currentUser?.roleID == "Admin") ? <AdminBlueprint /> : <Home />} />
       </Routes>
       <Footer />
     </BrowserRouter>

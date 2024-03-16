@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography
 } from "@mui/material";
 import axios from "axios";
@@ -41,12 +42,11 @@ export default function Customizes() {
   const currentPart = useSelector((state) => state.part.currentPart);
 
   const [blueprintId, setBlueprintId] = useState(currentBlueprint?._id);
-  const [bedRoom, setBedRoom] = useState(1);
-  const [restRoom, setRestRoom] = useState(1);
+  const [bedRoom, setBedRoom] = useState((currentBlueprint) ? (currentBlueprint?.room.bedRoom) : 1);
+  const [restRoom, setRestRoom] = useState((currentBlueprint) ? (currentBlueprint?.room.restRoom) : 1);
   const [materials, setMaterials] = useState([]);
-  const [selectedFloor, setSelectedFloor] = useState((currentBlueprint.floor) ? currentBlueprint.floor : 1);
-  const [selectedPart, setSelectedPart] = useState((currentBlueprint.floor) ? 3 : 1);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedFloor, setSelectedFloor] = useState((currentBlueprint) ? (currentBlueprint.floor) : 1);
+  const [selectedPart, setSelectedPart] = useState((currentBlueprint) ? 3 : 1);
   const [sizes, setSizes] = useState([]);
   const [paintWall, setPaintWall] = useState(null);
   const [roof, setRoof] = useState(null);
@@ -56,11 +56,16 @@ export default function Customizes() {
   const [floorTitle, setFloorTitle] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
   const [wide, setWide] = useState((currentBlueprint) ? currentBlueprint.wide : 0);
   const [long, setLong] = useState((currentBlueprint) ? currentBlueprint.long : 0);
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    if (validateSubmit()) {
+      setOpen(true)
+    }
+  };
   const handleClose = () => setOpen(false);
 
   const fetchMaterials = async () => {
@@ -75,6 +80,27 @@ export default function Customizes() {
       setError(error);
     }
   };
+
+  const validateSubmit = () => {
+    if (!paintWall || !roof || !door || !window || !wallTitle || !floorTitle) {
+      setErrorMsg('Please select all material');
+      return false;
+    }
+
+    if (wide == 0 || long == 0) {
+      setErrorMsg('Please check your design size');
+      return false;
+    }
+
+    if (parseFloat(wide) > parseFloat(long)) {
+      console.log("WIDE:" + wide);
+      console.log(long);
+      setErrorMsg('Wide can not be higher than long');
+      return false;
+    }
+    setErrorMsg('');
+    return true;
+  }
 
   const fetchSizes = async () => {
     try {
@@ -95,23 +121,57 @@ export default function Customizes() {
     fetchMaterials();
   }, []);
 
+  const calculatePrice = () => {
+    let total = 0;
+    if(currentBlueprint) {
+      total =
+        long *
+          wide *
+          (((selectedPart == 1 || selectedPart == 3) ? (currentPart.rawPart) : 0) + ((selectedPart == 2 || selectedPart == 3) ? (currentPart.finishingPart) : 0)) +
+          ((currentBlueprint) ? ((door?.price * currentBlueprint?.materials.door.quantity) +
+             (floorTitle?.price * currentBlueprint?.materials.floorTitle.quantity) +
+               (wallTitle?.price * currentBlueprint?.materials.wallTitle.quantity) +
+                 (paintWall?.price * currentBlueprint?.materials.paintWall.quantity) +
+                   (roof?.price * currentBlueprint?.materials.roof.quantity) +
+                     (window?.price * currentBlueprint?.materials.window.quantity)) : 0);
+    } else {
+      total =
+        long *
+          wide *
+          (currentPart.rawPart + currentPart.finishingPart);
+    }
+    
+    if(selectedFloor != 1) {
+      total = total * ((selectedFloor - 1) * 0.7 + 1);
+    }
+    return total;
+  };
+
   const getBlueprint = async () => {
-    if (!paintWall && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.paintWall}`);
-      let PaintWall = res?.data;
+    if (paintWall == undefined && materials) {
+      let PaintWall = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.paintWall.item}`);
+        PaintWall = res?.data;
+      }
       if (!PaintWall) {
         PaintWall = materials.find((item) => item.item === "PaintWall");
       }
+      console.log(PaintWall);
       if (PaintWall) {
         setPaintWall(PaintWall);
       }
     }
 
     if (!roof && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.roof}`);
-      let Roof = res?.data;
-      if (!Roof) {
-        Roof = materials.find((item) => item.item === "Roof");
+      let Roof = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.roof.item}`);
+        Roof = res?.data;
+      } else {
+        if (!Roof) {
+          Roof = materials.find((item) => item.item === "Roof");
+        }
       }
       if (Roof) {
         setRoof(Roof);
@@ -119,40 +179,56 @@ export default function Customizes() {
     }
 
     if (!door && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.door}`);
-      let Door = res?.data;
-      if (!Door) {
-        Door = materials.find((item) => item.item === "Door");
+      let Door = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.door.item}`);
+        Door = res?.data;
+      } else {
+        if (!Door) {
+          Door = materials.find((item) => item.item === "Door");
+        }
       }
       if (Door) {
         setDoor(Door);
       }
     }
     if (!window && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.window}`);
-      let Window = res?.data;
-      if (!Window) {
-        Window = materials.find((item) => item.item === "Window");
+      let Window = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.window.item}`);
+        Window = res?.data;
+      } else {
+        if (!Window) {
+          Window = materials.find((item) => item.item === "Window");
+        }
       }
       if (Window) {
         setWindow(Window);
       }
     }
     if (!wallTitle && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.wallTitle}`);
-      let WallTitle = res?.data;
-      if (!WallTitle) {
-        WallTitle = materials.find((item) => item.item === "WallTitle");
+      let WallTitle = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.wallTitle.item}`);
+        WallTitle = res?.data;
+      } else {
+        if (!WallTitle) {
+          WallTitle = materials.find((item) => item.item === "WallTitle");
+        }
       }
       if (WallTitle) {
         setWallTitle(WallTitle);
       }
     }
     if (!floorTitle && materials) {
-      const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint.materials.floorTitle}`);
-      let FloorTitle = res?.data;
-      if (!FloorTitle) {
-        FloorTitle = materials.find((item) => item.item === "FloorTitle");
+      let FloorTitle = null;
+      if (currentBlueprint) {
+        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.floorTitle.item}`);
+        FloorTitle = res?.data;
+      } else {
+        if (!FloorTitle) {
+          FloorTitle = materials.find((item) => item.item === "FloorTitle");
+        }
       }
       if (FloorTitle) {
         setFloorTitle(FloorTitle);
@@ -175,6 +251,7 @@ export default function Customizes() {
   const handleSubmit = async () => {
     const data = {
       userId: currentUser._id,
+      process: selectedPart,
       rawPart: currentPart?.rawPart,
       finishingPart: currentPart?.finishingPart,
       wide: wide,
@@ -185,27 +262,23 @@ export default function Customizes() {
         restRoom: restRoom,
       },
       materials: {
-        paintWall: { paintWall, quantity: 0 },
-        roof: { roof, quantity: 0 },
-        door: { door, quantity: 0 },
-        window: { window, quantity: 0 },
-        wallTitle: { wallTitle, quantity: 0 },
-        floorTitle: { floorTitle, quantity: 0 },
+        paintWall: { item: paintWall, quantity: (currentBlueprint) ? (currentBlueprint.materials.paintWall.quantity) : 0 },
+        roof: { item: roof, quantity: (currentBlueprint) ? (currentBlueprint.materials.roof.quantity) : 0 },
+        door: { item: door, quantity: (currentBlueprint) ? (currentBlueprint.materials.door.quantity) : 0 },
+        window: { item: window, quantity: (currentBlueprint) ? (currentBlueprint.materials.window.quantity) : 0 },
+        wallTitle: { item: wallTitle, quantity: (currentBlueprint) ? (currentBlueprint.materials.wallTitle.quantity) : 0 },
+        floorTitle: { item: floorTitle, quantity: (currentBlueprint) ? (currentBlueprint.materials.floorTitle.quantity) : 0 },
       },
     };
 
-    const res = await axios.get(`http://localhost:3000/api/design-save/${blueprintId}`);
-    if (res.data) {
+    if (blueprintId) {
       try {
         const response = await axios.put(
-          `http://localhost:3000/api/design-save/${designSaveId}`,
-          updatedData,
+          `http://localhost:3000/api/design-save/${blueprintId}`,
+          data,
           {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+            headers: { token: `Bearer ${currentUser?.accessToken}` },
+          });
         console.log('Design save updated successfully:', response.data);
 
       } catch (error) {
@@ -219,11 +292,6 @@ export default function Customizes() {
       const response = await axios.post('http://localhost:3000/api/design-save', data, {
         headers: { token: `Bearer ${currentUser.accessToken}` },
       });
-      if (response.status === 201) {
-        setSuccessMessage('Your blueprint have been sent!');
-      } else {
-        setErrorMessage('An error occurred. Please try again later.');
-      }
     }
     navigate('/blueprint');
   };
@@ -231,15 +299,6 @@ export default function Customizes() {
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ];
-
   return (
     <div className="" id="Customize">
       <div className="flex justify-center my-11 text-5xl font-semibold">
@@ -251,92 +310,70 @@ export default function Customizes() {
           <div className="item">
             <div>
               <h5>Size</h5>
-              {sizes &&
-                sizes?.map((size, index) => {
-                  const isChecked = size?._id == selectedSize?._id;
-                  return (
-                    <div
-                      className="form-check form-check-inline radio"
-                      key={index}
-                    >
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="inlineRadioOptions"
-                        id={size?._id} // Unique IDs for radios
-                        value={isChecked} // Use size ID as value
-                        onChange={() => setSelectedSize(size)}
-                      />
-                      <label className="form-check-label" htmlFor={size?._id}>
-                        Square: W{size?.wide} x L{size?.long}
-                      </label>
-                    </div>
-                  );
-                })}
+              <div className="item">
+                <TextField
+                  id="outlined-basic"
+                  label="Wide"
+                  variant="outlined"
+                  className="size"
+                  value={wide}
+                  onChange={(e) => {
+                    let input = e.target.value;
+                    // Remove leading zeros if the input starts with 0
+                    if (input.length > 1 && input[0] === '0') {
+                      input = input.replace(/^0+/, '');
+                    }
+                    // Regular expression to match only numbers
+                    const regex = /^[0-9\b]+$/;
+                    if (input === '' || regex.test(input)) {
+                      // If input is empty or contains only numbers, update state
+                      setWide(input);
+                    }
+                  }}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Long"
+                  variant="outlined"
+                  className="size"
+                  value={long}
+                  onChange={(e) => {
+                    let input = e.target.value;
+                    // Remove leading zeros if the input starts with 0
+                    if (input.length > 1 && input[0] === '0') {
+                      input = input.replace(/^0+/, '');
+                    }
+                    // Regular expression to match only numbers
+                    const regex = /^[0-9\b]+$/;
+                    if (input === '' || regex.test(input)) {
+                      // If input is empty or contains only numbers, update state
+                      setLong(input);
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="item">
             <h5>Floor</h5>
-            <div className="form-check form-check-inline radio">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="floorRadioOptions"
-                id="floorRadio1"
-                value={1}
-                onChange={(event) => {
-                  setSelectedFloor(event.target.value);
-                }}
-              ></input>
-              <label className="form-check-label" htmlFor="inlineRadio1">
-                One Floor
-              </label>
-            </div>
-            <div className="form-check form-check-inline radio">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="floorRadioOptions"
-                id="floorRadio2"
-                onChange={(event) => {
-                  setSelectedFloor(event.target.value);
-                }}
-                value={2}
-              ></input>
-              <label className="form-check-label" htmlFor="inlineRadio2">
-                Two Floor
-              </label>
-            </div>
-            <div className="form-check form-check-inline radio">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="floorRadioOptions"
-                id="floorRadio3"
-                onChange={(event) => {
-                  setSelectedFloor(event.target.value);
-                }}
-                value={3}
-              ></input>
-              <label className="form-check-label" htmlFor="inlineRadio3">
-                Three Floor
-              </label>
-            </div>
-            <div className="form-check form-check-inline radio">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="floorRadioOptions"
-                id="floorRadio3"
-                onChange={(event) => {
-                  setSelectedFloor(event.target.value);
-                }}
-                value={4}
-              ></input>
-              <label className="form-check-label" htmlFor="inlineRadio3">
-                Four Floor
-              </label>
-            </div>
+            {[1, 2, 3].map(floor => (
+              <div className="form-check form-check-inline radio" key={`floorRadio${floor}`}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="floorRadioOptions"
+                  id={`floorRadio${floor}`}
+                  onChange={(event) => {
+                    setSelectedFloor(parseInt(event.target.value));
+                  }}
+                  value={floor}
+                  checked={selectedFloor === floor}
+                />
+                <label className="form-check-label" htmlFor={`floorRadio${floor}`}>
+                  {`${floor} Floor`}
+                </label>
+              </div>
+            ))}
           </div>
 
           <div className="item">
@@ -601,6 +638,7 @@ export default function Customizes() {
                   })}
             </div>
           </div>
+          <p className="text-red-700 mt-5">{errorMsg}</p>
           <div className="btn-submit">
             <Button
               variant="contained"
@@ -609,7 +647,7 @@ export default function Customizes() {
                 handleOpen();
               }}
             >
-              Submit
+              Xem chi phí
             </Button>
             <Modal
               open={open}
@@ -645,14 +683,14 @@ export default function Customizes() {
                                 <TableCell component="th" scope="row">
                                   Phần thô
                                 </TableCell>
-                                <TableCell align="center"></TableCell>
+                                <TableCell align="center">{currentPart?.rawPart}</TableCell>
                                 <TableCell align="center">
-                                  {selectedSize?.wide} x {selectedSize?.long}
+                                  {wide} x {long}
                                 </TableCell>
                                 <TableCell align="center">
-                                  {selectedSize?.wide *
-                                    selectedSize?.long *
-                                    selectedSize?.rawPart}
+                                  {wide *
+                                    long *
+                                    currentPart?.rawPart}
                                 </TableCell>
                               </TableRow>
                             ) : null
@@ -668,14 +706,14 @@ export default function Customizes() {
                                 <TableCell component="th" scope="row">
                                   Phần hoàn thiện
                                 </TableCell>
-                                <TableCell align="center"></TableCell>
+                                <TableCell align="center">{currentPart?.finishingPart}</TableCell>
                                 <TableCell align="center">
-                                  {selectedSize?.wide} x {selectedSize?.long}
+                                  {wide} x {long}
                                 </TableCell>
                                 <TableCell align="center">
-                                  {selectedSize?.wide *
-                                    selectedSize?.long *
-                                    selectedSize?.finishingPart}
+                                  {wide *
+                                    long *
+                                    currentPart?.finishingPart}
                                 </TableCell>
                               </TableRow>
                             ) : null
@@ -691,9 +729,9 @@ export default function Customizes() {
                           <TableCell align="center">
                             {paintWall?.price}
                           </TableCell>
-                          <TableCell align="center">145</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.paintWall.quantity) ? (currentBlueprint?.materials?.paintWall.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {paintWall?.price * 145}
+                            {paintWall?.price *  (currentBlueprint?.materials?.paintWall.quantity)}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -705,9 +743,9 @@ export default function Customizes() {
                             Mái nhà
                           </TableCell>
                           <TableCell align="center">{roof?.price}</TableCell>
-                          <TableCell align="center">135</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.roof.quantity) ? (currentBlueprint?.materials?.roof.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {roof?.price * 135}
+                            {roof?.price *  (currentBlueprint?.materials?.roof.quantity)}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -719,9 +757,9 @@ export default function Customizes() {
                             Cửa đi
                           </TableCell>
                           <TableCell align="center">{door?.price}</TableCell>
-                          <TableCell align="center">18</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.door.quantity) ? (currentBlueprint?.materials?.door.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {door?.price * 18}
+                            {door?.price *  (currentBlueprint?.materials?.door.quantity)}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -733,9 +771,9 @@ export default function Customizes() {
                             Cửa sổ
                           </TableCell>
                           <TableCell align="center">{window?.price}</TableCell>
-                          <TableCell align="center">15</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.window.quantity) ? (currentBlueprint?.materials?.window.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {window?.price * 15}
+                            {window?.price *  (currentBlueprint?.materials?.window.quantity)}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -749,9 +787,9 @@ export default function Customizes() {
                           <TableCell align="center">
                             {wallTitle?.price}
                           </TableCell>
-                          <TableCell align="center">23</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.wallTitle.quantity) ? (currentBlueprint?.materials?.wallTitle.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {wallTitle?.price * 23}
+                            {wallTitle?.price *  (currentBlueprint?.materials?.wallTitle.quantity)}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -765,19 +803,32 @@ export default function Customizes() {
                           <TableCell align="center">
                             {floorTitle?.price}
                           </TableCell>
-                          <TableCell align="center">7</TableCell>
+                          <TableCell align="center">{(currentBlueprint?.materials?.floorTitle.quantity) ? (currentBlueprint?.materials?.floorTitle.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {floorTitle?.price * 7}
+                            {floorTitle?.price *  (currentBlueprint?.materials?.floorTitle.quantity)}
                           </TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <div className="total">
-                    <p className="total-label">
-                      Tổng chi phí xây dựng dự tính:
-                    </p>
-                    <p className="total-number">868825000 VNĐ</p>
+                  <div className="submit-container">
+                    <div className="total">
+                      <p className="total-label">
+                        Tổng chi phí xây dựng dự tính:
+                      </p>
+                      <p className="total-number">{calculatePrice()} VNĐ</p>
+                    </div>
+                    <div className="btn-customize-submit">
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => {
+                          handleSubmit();
+                        }}
+                      >
+                        {(blueprintId) ? "Cập nhật" : "Xác nhận"}
+                      </Button>
+                    </div>
                   </div>
                 </Typography>
               </Box>

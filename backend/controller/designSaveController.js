@@ -1,4 +1,5 @@
 const DesignSave = require('../models/DesignSave.model.js'); // Assuming the model is exported correctly
+const Material = require('../models/material.model.js');
 
 const designSaveController = {
   // Get all design saves
@@ -16,10 +17,7 @@ const designSaveController = {
   getByUserId: async (req, res) => {
     try {
       const userId = req.params.userId; // Assuming the user ID is in the request params
-      const designSaves = await DesignSave.find( { [userId]: userId } ); // Filter by userId
-      if (!designSaves.length) {
-        return res.status(404).json({ message: 'No design saves found for this user' });
-      }
+      const designSaves = await DesignSave.find({ userId: userId }); // Filter by userId
       res.status(200).json(designSaves);
     } catch (error) {
       console.error('Error getting design saves by user ID:', error);
@@ -41,11 +39,29 @@ const designSaveController = {
     }
   },
 
+  getDesignSaveViewById: async (req, res) => {
+    try {
+      const designSave = await DesignSave.findById(req.params.id);
+      if (!designSave) {
+        return res.status(404).json({ message: 'Design save not found' });
+      }
+      for (const key in designSave.materials) {
+        // Find the material data from the Material model using the item ID
+        const material = await Material.findById(designSave.materials[key].item);
+        // Replace the ID in the designSave with the material data
+        designSave.materials[key].item = material;
+    }
+        res.status(200).json(designSave);
+    } catch (error) {
+      console.error('Error getting design save by ID:', error);
+      res.status(500).json({ message: 'Error getting design save' });
+    }
+  },
+
   // Create a new design save
   createDesignSave: async (req, res) => {
     try {
       const newDesignSave = new DesignSave(req.body);
-      console.log(newDesignSave);
       await newDesignSave.save();
       res.status(201).json(newDesignSave);
     } catch (error) {

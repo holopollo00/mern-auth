@@ -47,10 +47,10 @@ export default function SignUp() {
         setEmail('');
         setRoleID('');
         setAccountStatus(''); // Clear form fields after successful signup
+        navigate("/sign-in");
       } else {
         setErrorMessage('An error occurred. Please try again later.');
       }
-      navigate("/sign-in");
     } catch (error) {
       setLoading(false);
       setError(true);

@@ -53,7 +53,7 @@ export default function PaginationButton({
         }
         breakLabel={<span className="mr-4">...</span>}
         breakClassName="break-me"
-        pageCount={4}
+        pageCount={totalPages}
         marginPagesDisplayed={2}
         pageRangeDisplayed={3}
         onPageChange={handlePageClick}

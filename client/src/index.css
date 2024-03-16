@@ -11,3 +11,15 @@ body {
     border-top: 1px solid rgb(236 239 241);
     padding: 0 16px;
 }
+
+.Default {
+    color: rgb(66 165 245);
+}
+
+.Processing {
+    color: #dfdf04;
+}
+
+.Approved {
+    color: green;
+}

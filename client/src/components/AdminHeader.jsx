@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { clearBlueprint } from "../redux/user/blueprintSlice";
 
-export default function Header() {
+export default function AdminHeader() {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   return (
@@ -21,14 +21,19 @@ export default function Header() {
               Home
             </li>
           </Link>
-          <Link to="/designs" className="no-underline text-white">
+          <Link to="/admin-material" className="no-underline text-white">
+            <li className="flex-grow hover:text-yellow-400 hover:underline">
+              Materials
+            </li>
+          </Link>
+          <Link to="/admin-design" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               Designs
             </li>
           </Link>
-          <Link to="/customizes" className="no-underline text-white" onClick={dispatch(clearBlueprint())}>
+          <Link to="/admin-blueprint" className="no-underline text-white" onClick={dispatch(clearBlueprint())}>
             <li className="flex-grow hover:text-yellow-400 hover:underline">
-              Customizes
+              Blueprints
             </li>
           </Link>
           <Link to="/about" className="no-underline text-white">

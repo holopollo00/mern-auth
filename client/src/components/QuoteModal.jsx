@@ -40,6 +40,7 @@ export default function QuoteModal({ visible, onClose }) {
     } else {
       const data = {
         userId: currentUser._id,
+        process: 3,
         rawPart: currentPart?.rawPart,
         finishingPart: currentPart?.finishingPart,
         wide: currentDesign.size?.wide,
@@ -50,14 +51,15 @@ export default function QuoteModal({ visible, onClose }) {
           restRoom: currentDesign.restRoom,
         },
         materials: {
-          paintWall: { ...selectedMaterials.filter((e) => e.item == "PaintWall")[0], quantity: currentDesign.design?.paintWallQuantity },
-          roof: { ...selectedMaterials.filter((e) => e.item == "Roof")[0], quantity: currentDesign.design?.roofQuantity },
-          door: { ...selectedMaterials.filter((e) => e.item == "Door")[0], quantity: currentDesign.design?.doorQuantity },
-          window: { ...selectedMaterials.filter((e) => e.item == "Window")[0], quantity: currentDesign.design?.windowQuantity },
-          wallTitle: { ...selectedMaterials.filter((e) => e.item == "WallTitle")[0], quantity: currentDesign.design?.wallTitleQuantity },
-          floorTitle: { ...selectedMaterials.filter((e) => e.item == "FloorTitle")[0], quantity: currentDesign.design?.floorTitleQuantity },
+          paintWall: { item: selectedMaterials.filter((e) => e.item == "PaintWall")[0], quantity: currentDesign.design?.paintWallQuantity },
+          roof: { item: selectedMaterials.filter((e) => e.item == "Roof")[0], quantity: currentDesign.design?.roofQuantity },
+          door: { item: selectedMaterials.filter((e) => e.item == "Door")[0], quantity: currentDesign.design?.doorQuantity },
+          window: { item: selectedMaterials.filter((e) => e.item == "Window")[0], quantity: currentDesign.design?.windowQuantity },
+          wallTitle: { item: selectedMaterials.filter((e) => e.item == "WallTitle")[0], quantity: currentDesign.design?.wallTitleQuantity },
+          floorTitle: { item: selectedMaterials.filter((e) => e.item == "FloorTitle")[0], quantity: currentDesign.design?.floorTitleQuantity },
         },
       };
+      console.log(data);
       const response = await axios.post('http://localhost:3000/api/design-save', data, {
         headers: { token: `Bearer ${currentUser.accessToken}` },
       });

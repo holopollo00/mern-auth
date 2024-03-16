@@ -5,6 +5,10 @@ const designSaveSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    process: {
+        type: Number,
+        required: true,
+    },
     rawPart: {
         type: Number,
         required: true,
@@ -33,34 +37,80 @@ const designSaveSchema = new mongoose.Schema({
     },
     floor: {
         type: Number,
-        required: true, 
+        required: true,
     },
     materials: {
         door: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
-        }, 
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
+        },
         floorTitle: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
-        }, 
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
+        },
         paintWall: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
-        }, 
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
+        },
         roof: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
-        }, 
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
+        },
         wallTitle: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
         },
         window: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "MaterialSave",
+            item: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Material",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            }
         }
     },
+    status: {
+        id: {
+            type: String,
+            default: "Default"
+        },
+        name: {
+            type: String,
+            default: "Chưa xử lý"
+        }
+    }
 });
 
 module.exports = mongoose.model("DesignSave", designSaveSchema);

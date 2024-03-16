@@ -12,9 +12,9 @@ export default function CustomArea() {
   const currentPart = useSelector((state) => state.part.currentPart);
   const [size, setSize] = useState();
   const [selectedSizeId, setSelectedSizeId] = useState('');
-  
-  const [bedRoom, setBedRoom] = useState(currentDesign?.bedRoom);
-  const [restRoom, setRestRoom] = useState(currentDesign?.restRoom);
+
+  const [bedRoom, setBedRoom] = useState(currentDesign?.design.room.bedRoom);
+  const [restRoom, setRestRoom] = useState(currentDesign?.design.room.restRoom);
   const handleClick = () => {
     navigate("/designs");
   };
@@ -25,7 +25,7 @@ export default function CustomArea() {
       const updatedDesign = {
         ...currentDesign,
         size: size.filter((e) => {
-          if(e._id == selectedSizeId) {
+          if (e._id == selectedSizeId) {
             return e;
           }
         })[0], // Update size with fetched data
@@ -56,9 +56,9 @@ export default function CustomArea() {
         }
         const data = await res.json();
         setSize(data);
-        if(selectedSizeId == '' && !currentDesign.size?._id) {
+        if (selectedSizeId == '' && !currentDesign.size?._id) {
           setSelectedSizeId(data[0]._id);
-        } else if(currentDesign.size?._id) {
+        } else if (currentDesign.size?._id) {
           setSelectedSizeId(currentDesign.size?._id);
         }
       } catch (error) {
@@ -145,24 +145,24 @@ export default function CustomArea() {
           </li>
         </ul>
       </div>
-          <button
-          style={{marginLeft: "30px"}}
-            onClick={handleClick}
-            className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 no-underline"
-          >
-            <svg
-              viewBox="0 0 22 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 xl:w-4 inline-block mr-2 css-2rvvjx"
-            >
-              <path
-                d="m7.423 14 1.476-1.41L4.104 8h16.93V6H4.103l4.805-4.59L7.423 0 .093 7l7.33 7Z"
-                fill="#797979"
-              ></path>
-            </svg>
-            Back
-          </button>
+      <button
+        style={{ marginLeft: "30px" }}
+        onClick={handleClick}
+        className="text-gray-3 font-light back-btn hidden lg:flex items-center mb-4 no-underline"
+      >
+        <svg
+          viewBox="0 0 22 14"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-6 xl:w-4 inline-block mr-2 css-2rvvjx"
+        >
+          <path
+            d="m7.423 14 1.476-1.41L4.104 8h16.93V6H4.103l4.805-4.59L7.423 0 .093 7l7.33 7Z"
+            fill="#797979"
+          ></path>
+        </svg>
+        Back
+      </button>
       <div className="flex flex-col lg:flex-row lg:space-x-8 container">
         <div className="mt-8">
           <div className="hidden md:flex mb-3 lg:mb-8 pb-4 border-b border-gray-2">
@@ -218,81 +218,81 @@ export default function CustomArea() {
           </div>
           <div className="mb-8 mr-5">
             <div className="flex flex-row flex-wrap">
-              
-            <FormControl sx={{ m: 1, minWidth: 140, marginRight: 12 }}>
-              <InputLabel id="demo-simple-select-label">Bed Room</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={bedRoom}
-                label="Bed Room"
-                onChange={(event) => {
-                  setBedRoom(event.target.value);
-                }}
-              >
-                <MenuItem
-                  value={1}
-                  onChange={() => {
-                    setBedRoom(value);
+
+              <FormControl sx={{ m: 1, minWidth: 140, marginRight: 12 }}>
+                <InputLabel id="demo-simple-select-label">Bed Room</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={bedRoom}
+                  label="Bed Room"
+                  onChange={(event) => {
+                    setBedRoom(event.target.value);
                   }}
                 >
-                  One Room
-                </MenuItem>
-                <MenuItem
-                  value={2}
-                  onChange={() => {
-                    setBedRoom(value);
+                  <MenuItem
+                    value={1}
+                    onChange={() => {
+                      setBedRoom(value);
+                    }}
+                  >
+                    One Room
+                  </MenuItem>
+                  <MenuItem
+                    value={2}
+                    onChange={() => {
+                      setBedRoom(value);
+                    }}
+                  >
+                    Two Room
+                  </MenuItem>
+                  <MenuItem
+                    value={3}
+                    onChange={() => {
+                      setBedRoom(value);
+                    }}
+                  >
+                    Three Room
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 140 }}>
+                <InputLabel id="demo-simple-select-label">Rest Room</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={restRoom}
+                  label="Rest Room"
+                  onChange={(event) => {
+                    setRestRoom(event.target.value);
                   }}
                 >
-                  Two Room
-                </MenuItem>
-                <MenuItem
-                  value={3}
-                  onChange={() => {
-                    setBedRoom(value);
-                  }}
-                >
-                  Three Room
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 140 }}>
-              <InputLabel id="demo-simple-select-label">Rest Room</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={restRoom}
-                label="Rest Room"
-                onChange={(event) => {
-                  setRestRoom(event.target.value);
-                }}
-              >
-                <MenuItem
-                  value={1}
-                  onChange={() => {
-                    setRestRoom(value);
-                  }}
-                >
-                  One Room
-                </MenuItem>
-                <MenuItem
-                  value={2}
-                  onChange={() => {
-                    setRestRoom(value);
-                  }}
-                >
-                  Two Room
-                </MenuItem>
-                <MenuItem
-                  value={3}
-                  onChange={() => {
-                    setRestRoom(value);
-                  }}
-                >
-                  Three Room
-                </MenuItem>
-              </Select>
-            </FormControl>
+                  <MenuItem
+                    value={1}
+                    onChange={() => {
+                      setRestRoom(value);
+                    }}
+                  >
+                    One Room
+                  </MenuItem>
+                  <MenuItem
+                    value={2}
+                    onChange={() => {
+                      setRestRoom(value);
+                    }}
+                  >
+                    Two Room
+                  </MenuItem>
+                  <MenuItem
+                    value={3}
+                    onChange={() => {
+                      setRestRoom(value);
+                    }}
+                  >
+                    Three Room
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </div>
           </div>
           <div className="flex justify-end items-center mb-6 bg-gray-100 h-16">
@@ -301,7 +301,7 @@ export default function CustomArea() {
           </div>
           <div>
             <Link to="/customMaterial">
-              <button onClick={()=>{
+              <button onClick={() => {
                 handleChange();
               }} className="bg-blue-400 w-full h-12 rounded-xl text-white hover:bg-yellow-500">
                 Customize Material
