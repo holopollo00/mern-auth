@@ -6,8 +6,9 @@
 #AdminMaterial .filter {
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-bottom: 40px;
+    align-items: flex-end;
 }
 
 #AdminMaterial .item-list {
@@ -72,4 +73,8 @@
 
 #AdminMaterial .item > * {
     margin-right: 20px;
+}
+
+#AdminMaterial .add-material {
+    margin-left: 24px;
 }
