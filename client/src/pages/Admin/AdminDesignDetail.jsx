@@ -84,6 +84,35 @@ export default function AdminDesignDetails() {
         fetchSize();
     }, [isAdding]);
 
+    const validate = () => {
+        if (name == "") {
+            setAddMsg("Please fill the design name");
+            return false;
+        }
+
+        if (paintWall == 0 ||
+            roof == 0 ||
+            door == 0 ||
+            window == 0 ||
+            wallTitle == 0 ||
+            floorTitle == 0) {
+            setAddMsg("Quantity of material can not equal 0");
+            return false;
+        }
+
+        if (floor < 1 || floor > 3) {
+            setAddMsg("Floor should be between 1 and 3");
+            return false;
+        }
+
+        if (restRoom == 0 ||
+            bedRoom == 0) {
+            setAddMsg("Quantity of bedroom and restroom can not equal 0");
+            return false;
+        }
+        return true;
+    }
+
     const handleUpdate = async () => {
         const data = {};
         data.name = name;
@@ -102,22 +131,25 @@ export default function AdminDesignDetails() {
         data.wallTitleQuantity = wallTitle;
         data.floorTitleQuantity = floorTitle;
 
-        try {
-            const response = await axios.put(
-                `http://localhost:3000/api/design/${designDetail?.design._id}`,
-                data,
-                {
-                    headers: { token: `Bearer ${currentUser?.accessToken}` },
-                });
-            console.log('Design save updated successfully:', response.data);
-            navigate("/designs");
-        } catch (error) {
-            if (error.response) {
-                console.error('Error updating design save:', error.response.data);
-            } else {
-                console.error('Error:', error);
+        if (validate) {
+            try {
+                const response = await axios.put(
+                    `http://localhost:3000/api/design/${designDetail?.design._id}`,
+                    data,
+                    {
+                        headers: { token: `Bearer ${currentUser?.accessToken}` },
+                    });
+                console.log('Design save updated successfully:', response.data);
+                navigate("/designs");
+            } catch (error) {
+                if (error.response) {
+                    console.error('Error updating design save:', error.response.data);
+                } else {
+                    console.error('Error:', error);
+                }
             }
         }
+
     }
 
     const handleRemove = async () => {
@@ -154,19 +186,19 @@ export default function AdminDesignDetails() {
     const handleTextareaChange = (event) => {
         const { value, selectionStart, selectionEnd } = event.target;
         const { keyCode } = event;
-    
+
         // If Enter key is pressed
         if (keyCode === 13) {
-          const newValue = `${value.substring(0, selectionStart)}\n\n${value.substring(selectionEnd)}`;
-          setDescription(newValue);
-          
-          // Adjust the cursor position
-          event.target.selectionStart = selectionEnd + 2;
-          event.target.selectionEnd = selectionEnd + 2;
+            const newValue = `${value.substring(0, selectionStart)}\n\n${value.substring(selectionEnd)}`;
+            setDescription(newValue);
+
+            // Adjust the cursor position
+            event.target.selectionStart = selectionEnd + 2;
+            event.target.selectionEnd = selectionEnd + 2;
         } else {
-          setDescription(value);
+            setDescription(value);
         }
-      };
+    };
 
     const handleSaveImage = (index) => {
         const newArray = [...pictures]; // Make a copy of the original array

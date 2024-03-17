@@ -31,6 +31,9 @@ import AdminBlueprint from "./pages/Blueprint/AdminBlueprint";
 import AdminMaterial from "./pages/Admin/AdminMaterial";
 import AdminDesignDetail from "./pages/Admin/AdminDesignDetail";
 import AdminDesignAddings from "./pages/Admin/AdminDesignAdding";
+import AdminBlogAddings from "./pages/Admin/AdminBlogAdding";
+import AdminBlogDetails from "./pages/Admin/AdminBlogDetail";
+import BlogDetails from "./pages/NewsDetail";
 
 
 export default function App() {
@@ -74,6 +77,7 @@ export default function App() {
         </Route>
         <Route path="/about" element={<About />} />
         <Route path="/newsblogs" element={<News />} />
+        <Route path="/blogDetails" element={(currentUser?.roleID == "User") ? <BlogDetails /> : <Home />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/customizes" element={(currentUser?.roleID == "Admin") ? <Home /> : <Customizes />} />
@@ -86,6 +90,9 @@ export default function App() {
         <Route path="/admin-material" element={(currentUser?.roleID == "Admin") ? <AdminMaterial /> : <Home />} />
         <Route path="/admin-designDetail/:id" element={(currentUser?.roleID == "Admin") ? <AdminDesignDetail /> : <Home />} />
         <Route path="/admin-design-adding" element={(currentUser?.roleID == "Admin") ? <AdminDesignAddings /> : <Home />} />
+        <Route path="/admin-blog-adding" element={(currentUser?.roleID == "Admin") ? <AdminBlogAddings /> : <Home />} />
+        <Route path="/admin-blogDetail/:id" element={(currentUser?.roleID == "Admin") ? <AdminBlogDetails /> : <Home />} />
+
       </Routes>
       <Footer />
     </BrowserRouter>
