@@ -26,6 +26,11 @@ export default function SignUp() {
         return;
       }
 
+      if (username.includes(' ')) {
+        setErrorMessage('Username can not include space');
+        return;
+      }
+
       // Hash password using a secure library like bcrypt (server-side)
       // This example simulates password hashing for demonstration purposes only.
       // In a real application, password hashing should be done on the server.

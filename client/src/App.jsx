@@ -29,6 +29,9 @@ import CustomArea from "./components/CustomArea";
 import AdminHeader from "./components/AdminHeader";
 import AdminBlueprint from "./pages/Blueprint/AdminBlueprint";
 import AdminMaterial from "./pages/Admin/AdminMaterial";
+import AdminDesignDetail from "./pages/Admin/AdminDesignDetail";
+import AdminDesignAddings from "./pages/Admin/AdminDesignAdding";
+
 
 export default function App() {
   const dispatch = useDispatch();
@@ -58,7 +61,7 @@ export default function App() {
       }
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/designs" element={(currentUser?.roleID == "Admin") ? <Home /> : <Designs />} />
+        <Route path="/designs" element={ <Designs />} />
         <Route path="/Blueprint" element={(currentUser?.roleID == "User") ? <Blueprint /> : <Home />} />
         <Route path="/designDetail/:id" element={(currentUser?.roleID == "Admin") ? <Home /> : <DesignDetails />} />
         <Route path="/customDesign" element={(currentUser?.roleID == "Admin") ? <Home /> : <CustomArea />} />
@@ -81,6 +84,8 @@ export default function App() {
         {/* Admin */}
         <Route path="/admin-blueprint" element={(currentUser?.roleID == "Admin") ? <AdminBlueprint /> : <Home />} />
         <Route path="/admin-material" element={(currentUser?.roleID == "Admin") ? <AdminMaterial /> : <Home />} />
+        <Route path="/admin-designDetail/:id" element={(currentUser?.roleID == "Admin") ? <AdminDesignDetail /> : <Home />} />
+        <Route path="/admin-design-adding" element={(currentUser?.roleID == "Admin") ? <AdminDesignAddings /> : <Home />} />
       </Routes>
       <Footer />
     </BrowserRouter>

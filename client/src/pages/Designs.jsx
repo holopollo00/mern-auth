@@ -6,7 +6,10 @@ import { useDispatch } from "react-redux";
 import { setCurrentDesign } from "../redux/user/designSlice";
 import UseDataFetcher from "../components/DesignPagination/UseDataFetcher";
 import PaginationButton from "../components/DesignPagination/PaginationButton";
+import { useSelector } from "react-redux";
 export default function Designs() {
+  const { currentUser } = useSelector((state) => state.user);
+
   const { loading, data } = UseDataFetcher();
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
@@ -35,12 +38,26 @@ export default function Designs() {
   return (
     <div className="">
       <div className="flex justify-center my-11 text-5xl font-semibold">
-        <h1>Designs</h1>
+        <h1>{(currentUser?.roleID != "Admin") ? "Designs" : "Design Management"}</h1>
       </div>
       {loading ? (
         <div className="text-center text-3xl">Loading ...</div>
       ) : (
         <>
+          {
+            (currentUser?.roleID == "Admin") ?
+              (
+                <div className="btn-add-design">
+                  <button
+                    onClick={() => {navigate("/admin-design-adding")}}
+                    className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500"
+                  >
+                    Thêm mới
+                  </button>
+                </div>
+              )
+              : null
+          }
           <div className="card-container flex flex-wrap gap-10 justify-center">
             {currentPageData.map((item) => {
               dispatch(setCurrentDesign(item));
@@ -77,18 +94,22 @@ export default function Designs() {
                     </div>
                   </div>
                   <div className="flex justify-around pb-5">
-                    <Link to={`/designDetail/${item.design._id}`}>
+                    <Link to={`/${(currentUser?.roleID != "Admin") ? "designDetail" : "admin-designDetail"}/${item.design._id}`}>
                       <button className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500">
                         See details
                       </button>
                     </Link>
+                    {
+                      (currentUser?.roleID != "Admin") ?
+                        (<button
+                          onClick={() => handleCustom(item.design._id)}
+                          className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500"
+                        >
+                          Customize
+                        </button>)
+                        : null
+                    }
 
-                    <button
-                      onClick={() => handleCustom(item.design._id)}
-                      className="bg-blue-400 w-32 h-12 rounded-xl text-white hover:bg-yellow-500"
-                    >
-                      Customize
-                    </button>
                   </div>
                 </div>
               );

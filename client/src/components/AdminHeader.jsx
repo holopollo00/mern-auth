@@ -26,7 +26,7 @@ export default function AdminHeader() {
               Materials
             </li>
           </Link>
-          <Link to="/admin-design" className="no-underline text-white">
+          <Link to="/designs" className="no-underline text-white">
             <li className="flex-grow hover:text-yellow-400 hover:underline">
               Designs
             </li>

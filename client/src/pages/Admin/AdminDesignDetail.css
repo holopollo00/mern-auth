@@ -1,0 +1,47 @@
+#AdminDesignDetail .item {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+#AdminDesignDetail .item-cover {
+    border-radius: 20px;
+    background-color: rgba(33, 150, 243, 0.17);
+}
+
+#AdminDesignDetail .image {
+    flex: 1;
+}
+#AdminMaterial .handle {
+    display: flex;
+    justify-content: space-between;
+    flex: 2;
+}
+
+
+#AdminDesignDetail .image-link {
+    flex: 6;
+}
+
+#AdminDesignDetail .image-link * {
+    width: 100%;
+}
+
+#AdminDesignDetail .item > * {
+    margin-right: 20px;
+}
+
+#AdminDesignDetail .btn-add-image {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+#AdminDesignDetail .image-message {
+    color: red;
+    font-weight: 700;
+}
