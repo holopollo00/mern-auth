@@ -11,6 +11,7 @@ const sizeRoutes = require("./routes/size.route.js");
 const designRoutes = require("./routes/design.route.js");
 const partRoutes = require("./routes/part.route.js");
 const designSaveRoutes = require("./routes/designSave.js");
+const blogRoutes = require("./routes/blog.js");
 
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/size", sizeRoutes);
 app.use("/api/design", designRoutes);
 app.use("/api/part", partRoutes);
 app.use("/api/design-save", designSaveRoutes);
+app.use("/api/blog", blogRoutes);
 
 app.listen(3000, () => {
     console.log("Server is running");
