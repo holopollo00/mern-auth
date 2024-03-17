@@ -1,0 +1,75 @@
+#AdminMaterial h1 {
+    text-align: center;
+    margin: 40px;
+}
+
+#AdminMaterial .filter {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 40px;
+}
+
+#AdminMaterial .item-list {
+    display: flex;
+    flex-direction: column;
+}
+
+#AdminMaterial .item {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+#AdminMaterial .item-header {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+#AdminMaterial .item-cover {
+    border-radius: 20px;
+    background-color: rgba(33, 150, 243, 0.17);
+}
+
+#AdminMaterial .image {
+    flex: 1;
+}
+
+
+
+#AdminMaterial .image-link {
+    flex: 6;
+}
+
+#AdminMaterial .image-link * {
+    width: 100%;
+}
+
+#AdminMaterial .type {
+    flex: 2;
+}
+
+
+#AdminMaterial .name {
+    flex: 2;
+}
+
+
+#AdminMaterial .price {
+    flex: 2;
+}
+
+
+#AdminMaterial .handle {
+    display: flex;
+    justify-content: space-between;
+    flex: 2;
+}
+
+#AdminMaterial .item > * {
+    margin-right: 20px;
+}

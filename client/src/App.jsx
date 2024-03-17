@@ -28,6 +28,7 @@ import { useSelector } from "react-redux";
 import CustomArea from "./components/CustomArea";
 import AdminHeader from "./components/AdminHeader";
 import AdminBlueprint from "./pages/Blueprint/AdminBlueprint";
+import AdminMaterial from "./pages/Admin/AdminMaterial";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -79,6 +80,7 @@ export default function App() {
         <Route path="/newsdetail" element={<NewsDetail />} />
         {/* Admin */}
         <Route path="/admin-blueprint" element={(currentUser?.roleID == "Admin") ? <AdminBlueprint /> : <Home />} />
+        <Route path="/admin-material" element={(currentUser?.roleID == "Admin") ? <AdminMaterial /> : <Home />} />
       </Routes>
       <Footer />
     </BrowserRouter>
