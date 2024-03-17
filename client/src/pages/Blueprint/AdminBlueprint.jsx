@@ -190,7 +190,7 @@ const AdminBlueprint = () => {
             <h1>Blueprint</h1>
             <div className="container">
                 <div className="filter">
-                    <Box sx={{ width: "fit-content"}}>
+                    <Box sx={{ width: "fit-content" }}>
                         <FormControl fullWidth>
                             <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
                             <Select
@@ -345,22 +345,24 @@ const AdminBlueprint = () => {
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.paintWall.item?.price}</TableCell>
                                         <TableCell align="center">
-                                            <TextField
-                                                style={{ maxWidth: "50px" }}
-                                                id="outlined-basic"
-                                                variant="outlined"
-                                                className="size"
-                                                value={paintWall}
-                                                onChange={(e) => {
-                                                    let input = e.target.value;
-                                                    // Regular expression to match only numbers
-                                                    const regex = /^[0-9\b]+$/;
-                                                    if (input === '' || regex.test(input)) {
-                                                        // If input is empty or contains only numbers, update state
-                                                        setPaintWall(input);
-                                                    }
-                                                }}
-                                            />
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={paintWall}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setPaintWall(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : paintWall}
                                         </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.paintWall.item?.price * paintWall}
@@ -375,22 +377,26 @@ const AdminBlueprint = () => {
                                             Mái nhà
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.roof.item?.price}</TableCell>
-                                        <TableCell align="center"><TextField
-                                            style={{ maxWidth: "50px" }}
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            className="size"
-                                            value={roof}
-                                            onChange={(e) => {
-                                                let input = e.target.value;
-                                                // Regular expression to match only numbers
-                                                const regex = /^[0-9\b]+$/;
-                                                if (input === '' || regex.test(input)) {
-                                                    // If input is empty or contains only numbers, update state
-                                                    setRoof(input);
-                                                }
-                                            }}
-                                        /></TableCell>
+                                        <TableCell align="center">
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={roof}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setRoof(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : roof}
+                                        </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.roof.item?.price * roof}
                                         </TableCell>
@@ -404,22 +410,26 @@ const AdminBlueprint = () => {
                                             Cửa đi
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.door.item?.price}</TableCell>
-                                        <TableCell align="center"><TextField
-                                            style={{ maxWidth: "50px" }}
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            className="size"
-                                            value={door}
-                                            onChange={(e) => {
-                                                let input = e.target.value;
-                                                // Regular expression to match only numbers
-                                                const regex = /^[0-9\b]+$/;
-                                                if (input === '' || regex.test(input)) {
-                                                    // If input is empty or contains only numbers, update state
-                                                    setDoor(input);
-                                                }
-                                            }}
-                                        /></TableCell>
+                                        <TableCell align="center">
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={door}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setDoor(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : door}
+                                        </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.door.item?.price * door}
                                         </TableCell>
@@ -433,22 +443,26 @@ const AdminBlueprint = () => {
                                             Cửa sổ
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.window.item?.price}</TableCell>
-                                        <TableCell align="center"><TextField
-                                            style={{ maxWidth: "50px" }}
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            className="size"
-                                            value={window}
-                                            onChange={(e) => {
-                                                let input = e.target.value;
-                                                // Regular expression to match only numbers
-                                                const regex = /^[0-9\b]+$/;
-                                                if (input === '' || regex.test(input)) {
-                                                    // If input is empty or contains only numbers, update state
-                                                    setWindow(input);
-                                                }
-                                            }}
-                                        /></TableCell>
+                                        <TableCell align="center">
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={window}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setWindow(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : window}
+                                        </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.window.item?.price * window}
                                         </TableCell>
@@ -464,22 +478,26 @@ const AdminBlueprint = () => {
                                         <TableCell align="center">
                                             {bluePrint?.materials?.wallTitle.item?.price}
                                         </TableCell>
-                                        <TableCell align="center"><TextField
-                                            style={{ maxWidth: "50px" }}
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            className="size"
-                                            value={wallTitle}
-                                            onChange={(e) => {
-                                                let input = e.target.value;
-                                                // Regular expression to match only numbers
-                                                const regex = /^[0-9\b]+$/;
-                                                if (input === '' || regex.test(input)) {
-                                                    // If input is empty or contains only numbers, update state
-                                                    setWallTitle(input);
-                                                }
-                                            }}
-                                        /></TableCell>
+                                        <TableCell align="center">
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={wallTitle}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setWallTitle(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : wallTitle}
+                                        </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.wallTitle.item?.price * wallTitle}
                                         </TableCell>
@@ -495,22 +513,26 @@ const AdminBlueprint = () => {
                                         <TableCell align="center">
                                             {bluePrint?.materials?.floorTitle.item?.price}
                                         </TableCell>
-                                        <TableCell align="center"><TextField
-                                            style={{ maxWidth: "50px" }}
-                                            id="outlined-basic"
-                                            variant="outlined"
-                                            className="size"
-                                            value={floorTitle}
-                                            onChange={(e) => {
-                                                let input = e.target.value;
-                                                // Regular expression to match only numbers
-                                                const regex = /^[0-9\b]+$/;
-                                                if (input === '' || regex.test(input)) {
-                                                    // If input is empty or contains only numbers, update state
-                                                    setFloorTitle(input);
-                                                }
-                                            }}
-                                        /></TableCell>
+                                        <TableCell align="center">
+                                            {(bluePrint?.status.id != "Approved") ?
+                                                (<TextField
+                                                    style={{ maxWidth: "50px" }}
+                                                    id="outlined-basic"
+                                                    variant="outlined"
+                                                    className="size"
+                                                    value={floorTitle}
+                                                    onChange={(e) => {
+                                                        let input = e.target.value;
+                                                        // Regular expression to match only numbers
+                                                        const regex = /^[0-9\b]+$/;
+                                                        if (input === '' || regex.test(input)) {
+                                                            // If input is empty or contains only numbers, update state
+                                                            setFloorTitle(input);
+                                                        }
+                                                    }}
+                                                />)
+                                                : floorTitle}
+                                        </TableCell>
                                         <TableCell align="center">
                                             {bluePrint?.materials.floorTitle.item?.price * floorTitle}
                                         </TableCell>
