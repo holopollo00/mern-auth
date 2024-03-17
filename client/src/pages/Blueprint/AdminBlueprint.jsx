@@ -7,6 +7,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentBlueprint } from "../../redux/user/blueprintSlice";
 import PaginationButton from "../../components/DesignPagination/PaginationButton";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import {
     Modal, Box, Typography, Table,
     TableBody,
@@ -31,6 +35,17 @@ const style = {
     p: 4,
 };
 
+const statusList = [
+    {
+        id: "Processing",
+        name: "Đang xử lý"
+    },
+    {
+        id: "Approved",
+        name: "Đã xác nhận"
+    }
+]
+
 const AdminBlueprint = () => {
     const { currentUser } = useSelector((state) => state.user);
     const [data, setData] = useState([]);
@@ -44,6 +59,7 @@ const AdminBlueprint = () => {
     const [window, setWindow] = useState(0);
     const [wallTitle, setWallTitle] = useState(0);
     const [floorTitle, setFloorTitle] = useState(0);
+    const [selectedStatus, setSelectedStatus] = useState(statusList[0]);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -60,13 +76,13 @@ const AdminBlueprint = () => {
     useEffect(() => {
         async function fetchData() {
             try {
-                const res = await axios.get(`/api/design-save`, {
+                const res = await axios.get(`http://localhost:3000/api/design-save`, {
                     headers: { token: `Bearer ${currentUser?.accessToken}` },
                 });
                 if (!res.status == 200) {
                     throw new Error("Network response was not Ok!");
                 }
-                const data = await res.data.filter((e) => e.status.id == "Processing");
+                const data = await res.data.filter((e) => e.status.id == selectedStatus.id);
                 setCurrentPageData(data.slice(startIndex, endIndex));
                 if (data.length <= 0) {
                     dispatch(setCurrentBlueprint(null));
@@ -86,7 +102,7 @@ const AdminBlueprint = () => {
 
         fetchData();
         console.log(bluePrint);
-    }, [bluePrint]);
+    }, [bluePrint, selectedStatus]);
 
     const handleSubmit = async () => {
         const data = { ...bluePrint };
@@ -168,10 +184,33 @@ const AdminBlueprint = () => {
         }
     }
 
+
     return (
         <div id="Blueprint">
             <h1>Blueprint</h1>
             <div className="container">
+                <div className="filter">
+                    <Box sx={{ width: "fit-content"}}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={selectedStatus}
+                                label="Age"
+                                onChange={(e) => { setSelectedStatus(e.target.value) }}
+                            >
+                                {
+                                    statusList.map((item, index) => {
+                                        return (
+                                            <MenuItem value={item} key={index}>{item.name}</MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </Box>
+                </div>
                 <div className="">
                     {loading ? (
                         <div className="text-center text-3xl">Loading ...</div>
@@ -307,7 +346,7 @@ const AdminBlueprint = () => {
                                         <TableCell align="center">{bluePrint?.materials?.paintWall.item?.price}</TableCell>
                                         <TableCell align="center">
                                             <TextField
-                                                style={{maxWidth: "50px"}}
+                                                style={{ maxWidth: "50px" }}
                                                 id="outlined-basic"
                                                 variant="outlined"
                                                 className="size"
@@ -337,7 +376,7 @@ const AdminBlueprint = () => {
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.roof.item?.price}</TableCell>
                                         <TableCell align="center"><TextField
-                                            style={{maxWidth: "50px"}}
+                                            style={{ maxWidth: "50px" }}
                                             id="outlined-basic"
                                             variant="outlined"
                                             className="size"
@@ -366,7 +405,7 @@ const AdminBlueprint = () => {
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.door.item?.price}</TableCell>
                                         <TableCell align="center"><TextField
-                                            style={{maxWidth: "50px"}}
+                                            style={{ maxWidth: "50px" }}
                                             id="outlined-basic"
                                             variant="outlined"
                                             className="size"
@@ -395,7 +434,7 @@ const AdminBlueprint = () => {
                                         </TableCell>
                                         <TableCell align="center">{bluePrint?.materials?.window.item?.price}</TableCell>
                                         <TableCell align="center"><TextField
-                                            style={{maxWidth: "50px"}}
+                                            style={{ maxWidth: "50px" }}
                                             id="outlined-basic"
                                             variant="outlined"
                                             className="size"
@@ -426,7 +465,7 @@ const AdminBlueprint = () => {
                                             {bluePrint?.materials?.wallTitle.item?.price}
                                         </TableCell>
                                         <TableCell align="center"><TextField
-                                            style={{maxWidth: "50px"}}
+                                            style={{ maxWidth: "50px" }}
                                             id="outlined-basic"
                                             variant="outlined"
                                             className="size"
@@ -457,7 +496,7 @@ const AdminBlueprint = () => {
                                             {bluePrint?.materials?.floorTitle.item?.price}
                                         </TableCell>
                                         <TableCell align="center"><TextField
-                                            style={{maxWidth: "50px"}}
+                                            style={{ maxWidth: "50px" }}
                                             id="outlined-basic"
                                             variant="outlined"
                                             className="size"

@@ -39,14 +39,11 @@ export default function App() {
 
   const getPart = async () => {
     try {
-      const res = await axios.get(`api/part`);
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await res.json();
+      const res = await axios.get(`http://localhost:3000/api/part`);
+      const data = await res.data;
       dispatch(setCurrentPart(data));
     } catch (error) {
-      console.log("Failed to fetch design to custom!");
+      console.log("Failed to fetch part to custom!");
     }
   };
 
