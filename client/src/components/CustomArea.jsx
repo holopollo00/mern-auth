@@ -40,11 +40,14 @@ export default function CustomArea() {
 
   const calculatePrice = () => {
     if (!currentDesign.size || !currentDesign.design) return 0;
-    return (
+    let total = 
       currentDesign.size.long *
       currentDesign.size.wide *
-      (currentPart.rawPart + currentPart.finishingPart) * currentDesign.design.floor * 0.7
-    );
+      (currentPart.rawPart + currentPart.finishingPart);
+    if(currentDesign.design.floor != 1) {
+      total = total * ((currentDesign.design.floor - 1) * 0.7 + 1);
+    }
+    return total;
   };
 
   useEffect(() => {
