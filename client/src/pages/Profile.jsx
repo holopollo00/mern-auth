@@ -4,9 +4,6 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
-  deleteUserStart,
-  deleteUserSuccess,
-  deleteUserFailure,
   signOut,
 } from "../redux/user/userSlice";
 import axios from "axios";
@@ -42,27 +39,15 @@ export default function Profile() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    try {
-      dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(deleteUserFailure(data));
-        return;
-      }
-      dispatch(deleteUserSuccess(data));
-    } catch (error) {
-      dispatch(deleteUserFailure(error));
-    }
-  };
   const handleSignOut = async () => {
     try {
-      await axios.post("http://localhost:3000/api/auth/logout", currentUser._id, {
-            headers: { token: `Bearer ${currentUser.accessToken}` },
-        });
+      await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        currentUser._id,
+        {
+          headers: { token: `Bearer ${currentUser.accessToken}` },
+        }
+      );
       dispatch(signOut());
     } catch (error) {
       console.log(error);
@@ -109,12 +94,6 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-2">
-        <span
-          onClick={handleDeleteAccount}
-          className="text-red-700 cursor-pointer"
-        >
-          Delete Account
-        </span>
         <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
           Signout
         </span>

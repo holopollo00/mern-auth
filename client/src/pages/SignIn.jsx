@@ -11,8 +11,8 @@ import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const { loading, error } = useSelector((state) => state.user);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,7 +24,10 @@ export default function SignIn() {
         password: password, // Replace with actual hashed password
       };
       dispatch(signInStart());
-      const response = await axios.post('http://localhost:3000/api/auth/login', user);
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        user
+      );
       const data = await response.data;
       if (data.success === false) {
         dispatch(signInFailure(data));
@@ -39,14 +42,21 @@ export default function SignIn() {
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
-      <form onSubmit={(e) => {handleSubmit(e)}} className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => {
+          handleSubmit(e);
+        }}
+        className="flex flex-col gap-4"
+      >
         <input
           type="text"
-          placeholder="Email"
-          id="email"
+          placeholder="Username"
+          id="username"
           required
           className="bg-gray-100 p-3 rounded-lg"
-          onChange={(e) => {setUsername(e.target.value)}}
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
         />
         <input
           type="password"
@@ -54,7 +64,9 @@ export default function SignIn() {
           id="password"
           required
           className="bg-gray-100 p-3 rounded-lg"
-          onChange={(e) => {setPassword(e.target.value)}}
+          onChange={(e) => {
+            setPassword(e.target.value);
+          }}
         />
         <button
           disabled={loading}
@@ -62,7 +74,7 @@ export default function SignIn() {
         >
           {loading ? "Loading..." : "Sign In"}
         </button>
-        <OAuth />
+        {/* <OAuth /> */}
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont have an account?</p>

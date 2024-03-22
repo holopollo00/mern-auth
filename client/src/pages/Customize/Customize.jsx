@@ -13,7 +13,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import Paper from "@mui/material/Paper";
@@ -42,11 +42,17 @@ export default function Customizes() {
   const currentPart = useSelector((state) => state.part.currentPart);
 
   const [blueprintId, setBlueprintId] = useState(currentBlueprint?._id);
-  const [bedRoom, setBedRoom] = useState((currentBlueprint) ? (currentBlueprint?.room.bedRoom) : 1);
-  const [restRoom, setRestRoom] = useState((currentBlueprint) ? (currentBlueprint?.room.restRoom) : 1);
+  const [bedRoom, setBedRoom] = useState(
+    currentBlueprint ? currentBlueprint?.room.bedRoom : 1
+  );
+  const [restRoom, setRestRoom] = useState(
+    currentBlueprint ? currentBlueprint?.room.restRoom : 1
+  );
   const [materials, setMaterials] = useState([]);
-  const [selectedFloor, setSelectedFloor] = useState((currentBlueprint) ? (currentBlueprint.floor) : 1);
-  const [selectedPart, setSelectedPart] = useState((currentBlueprint) ? 3 : 1);
+  const [selectedFloor, setSelectedFloor] = useState(
+    currentBlueprint ? currentBlueprint.floor : 1
+  );
+  const [selectedPart, setSelectedPart] = useState(currentBlueprint ? 3 : 1);
   const [sizes, setSizes] = useState([]);
   const [paintWall, setPaintWall] = useState(null);
   const [roof, setRoof] = useState(null);
@@ -56,14 +62,18 @@ export default function Customizes() {
   const [floorTitle, setFloorTitle] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [wide, setWide] = useState((currentBlueprint) ? currentBlueprint.wide : 0);
-  const [long, setLong] = useState((currentBlueprint) ? currentBlueprint.long : 0);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [wide, setWide] = useState(
+    currentBlueprint ? currentBlueprint.wide : 0
+  );
+  const [long, setLong] = useState(
+    currentBlueprint ? currentBlueprint.long : 0
+  );
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => {
     if (validateSubmit()) {
-      setOpen(true)
+      setOpen(true);
     }
   };
   const handleClose = () => setOpen(false);
@@ -83,24 +93,24 @@ export default function Customizes() {
 
   const validateSubmit = () => {
     if (!paintWall || !roof || !door || !window || !wallTitle || !floorTitle) {
-      setErrorMsg('Please select all material');
+      setErrorMsg("Please select all material");
       return false;
     }
 
     if (wide == 0 || long == 0) {
-      setErrorMsg('Please check your design size');
+      setErrorMsg("Please check your design size");
       return false;
     }
 
     if (parseFloat(wide) > parseFloat(long)) {
       console.log("WIDE:" + wide);
       console.log(long);
-      setErrorMsg('Wide can not be higher than long');
+      setErrorMsg("Wide can not be higher than long");
       return false;
     }
-    setErrorMsg('');
+    setErrorMsg("");
     return true;
-  }
+  };
 
   const fetchSizes = async () => {
     try {
@@ -120,28 +130,49 @@ export default function Customizes() {
     fetchSizes();
     fetchMaterials();
   }, []);
-
+  const calculatePriceNoFloor = () => {
+    let total = 0;
+    total =
+      long *
+        wide *
+        ((selectedPart == 1 || selectedPart == 3 ? currentPart.rawPart : 0) +
+          (selectedPart == 2 || selectedPart == 3
+            ? currentPart.finishingPart
+            : 0)) +
+      (currentBlueprint
+        ? door?.price * currentBlueprint?.materials.door.quantity +
+          floorTitle?.price * currentBlueprint?.materials.floorTitle.quantity +
+          wallTitle?.price * currentBlueprint?.materials.wallTitle.quantity +
+          paintWall?.price * currentBlueprint?.materials.paintWall.quantity +
+          roof?.price * currentBlueprint?.materials.roof.quantity +
+          window?.price * currentBlueprint?.materials.window.quantity
+        : 0);
+    return total;
+  };
   const calculatePrice = () => {
     let total = 0;
-    if(currentBlueprint) {
+    if (currentBlueprint) {
       total =
         long *
           wide *
-          (((selectedPart == 1 || selectedPart == 3) ? (currentPart.rawPart) : 0) + ((selectedPart == 2 || selectedPart == 3) ? (currentPart.finishingPart) : 0)) +
-          ((currentBlueprint) ? ((door?.price * currentBlueprint?.materials.door.quantity) +
-             (floorTitle?.price * currentBlueprint?.materials.floorTitle.quantity) +
-               (wallTitle?.price * currentBlueprint?.materials.wallTitle.quantity) +
-                 (paintWall?.price * currentBlueprint?.materials.paintWall.quantity) +
-                   (roof?.price * currentBlueprint?.materials.roof.quantity) +
-                     (window?.price * currentBlueprint?.materials.window.quantity)) : 0);
+          ((selectedPart == 1 || selectedPart == 3 ? currentPart.rawPart : 0) +
+            (selectedPart == 2 || selectedPart == 3
+              ? currentPart.finishingPart
+              : 0)) +
+        (currentBlueprint
+          ? door?.price * currentBlueprint?.materials.door.quantity +
+            floorTitle?.price *
+              currentBlueprint?.materials.floorTitle.quantity +
+            wallTitle?.price * currentBlueprint?.materials.wallTitle.quantity +
+            paintWall?.price * currentBlueprint?.materials.paintWall.quantity +
+            roof?.price * currentBlueprint?.materials.roof.quantity +
+            window?.price * currentBlueprint?.materials.window.quantity
+          : 0);
     } else {
-      total =
-        long *
-          wide *
-          (currentPart.rawPart + currentPart.finishingPart);
+      total = long * wide * (currentPart.rawPart + currentPart.finishingPart);
     }
-    
-    if(selectedFloor != 1) {
+
+    if (selectedFloor != 1) {
       total = total * ((selectedFloor - 1) * 0.7 + 1);
     }
     return total;
@@ -151,7 +182,9 @@ export default function Customizes() {
     if (paintWall == undefined && materials) {
       let PaintWall = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.paintWall.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.paintWall.item}`
+        );
         PaintWall = res?.data;
       }
       if (!PaintWall) {
@@ -166,7 +199,9 @@ export default function Customizes() {
     if (!roof && materials) {
       let Roof = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.roof.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.roof.item}`
+        );
         Roof = res?.data;
       } else {
         if (!Roof) {
@@ -181,7 +216,9 @@ export default function Customizes() {
     if (!door && materials) {
       let Door = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.door.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.door.item}`
+        );
         Door = res?.data;
       } else {
         if (!Door) {
@@ -195,7 +232,9 @@ export default function Customizes() {
     if (!window && materials) {
       let Window = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.window.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.window.item}`
+        );
         Window = res?.data;
       } else {
         if (!Window) {
@@ -209,7 +248,9 @@ export default function Customizes() {
     if (!wallTitle && materials) {
       let WallTitle = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.wallTitle.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.wallTitle.item}`
+        );
         WallTitle = res?.data;
       } else {
         if (!WallTitle) {
@@ -223,7 +264,9 @@ export default function Customizes() {
     if (!floorTitle && materials) {
       let FloorTitle = null;
       if (currentBlueprint) {
-        const res = await axios.get(`http://localhost:3000/api/material/${currentBlueprint?.materials.floorTitle.item}`);
+        const res = await axios.get(
+          `http://localhost:3000/api/material/${currentBlueprint?.materials.floorTitle.item}`
+        );
         FloorTitle = res?.data;
       } else {
         if (!FloorTitle) {
@@ -234,7 +277,7 @@ export default function Customizes() {
         setFloorTitle(FloorTitle);
       }
     }
-  }
+  };
 
   useEffect(() => {
     getBlueprint();
@@ -262,12 +305,42 @@ export default function Customizes() {
         restRoom: restRoom,
       },
       materials: {
-        paintWall: { item: paintWall, quantity: (currentBlueprint) ? (currentBlueprint.materials.paintWall.quantity) : 0 },
-        roof: { item: roof, quantity: (currentBlueprint) ? (currentBlueprint.materials.roof.quantity) : 0 },
-        door: { item: door, quantity: (currentBlueprint) ? (currentBlueprint.materials.door.quantity) : 0 },
-        window: { item: window, quantity: (currentBlueprint) ? (currentBlueprint.materials.window.quantity) : 0 },
-        wallTitle: { item: wallTitle, quantity: (currentBlueprint) ? (currentBlueprint.materials.wallTitle.quantity) : 0 },
-        floorTitle: { item: floorTitle, quantity: (currentBlueprint) ? (currentBlueprint.materials.floorTitle.quantity) : 0 },
+        paintWall: {
+          item: paintWall,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.paintWall.quantity
+            : 0,
+        },
+        roof: {
+          item: roof,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.roof.quantity
+            : 0,
+        },
+        door: {
+          item: door,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.door.quantity
+            : 0,
+        },
+        window: {
+          item: window,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.window.quantity
+            : 0,
+        },
+        wallTitle: {
+          item: wallTitle,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.wallTitle.quantity
+            : 0,
+        },
+        floorTitle: {
+          item: floorTitle,
+          quantity: currentBlueprint
+            ? currentBlueprint.materials.floorTitle.quantity
+            : 0,
+        },
       },
     };
 
@@ -278,27 +351,28 @@ export default function Customizes() {
           data,
           {
             headers: { token: `Bearer ${currentUser?.accessToken}` },
-          });
-        console.log('Design save updated successfully:', response.data);
-
+          }
+        );
+        console.log("Design save updated successfully:", response.data);
       } catch (error) {
         if (error.response) {
-          console.error('Error updating design save:', error.response.data);
+          console.error("Error updating design save:", error.response.data);
         } else {
-          console.error('Error:', error);
+          console.error("Error:", error);
         }
       }
     } else {
-      const response = await axios.post('http://localhost:3000/api/design-save', data, {
-        headers: { token: `Bearer ${currentUser.accessToken}` },
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/design-save",
+        data,
+        {
+          headers: { token: `Bearer ${currentUser.accessToken}` },
+        }
+      );
     }
-    navigate('/blueprint');
+    navigate("/blueprint");
   };
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
   return (
     <div className="" id="Customize">
       <div className="flex justify-center my-11 text-5xl font-semibold">
@@ -320,12 +394,12 @@ export default function Customizes() {
                   onChange={(e) => {
                     let input = e.target.value;
                     // Remove leading zeros if the input starts with 0
-                    if (input.length > 1 && input[0] === '0') {
-                      input = input.replace(/^0+/, '');
+                    if (input.length > 1 && input[0] === "0") {
+                      input = input.replace(/^0+/, "");
                     }
                     // Regular expression to match only numbers
                     const regex = /^[0-9\b]+$/;
-                    if (input === '' || regex.test(input)) {
+                    if (input === "" || regex.test(input)) {
                       // If input is empty or contains only numbers, update state
                       setWide(input);
                     }
@@ -340,12 +414,12 @@ export default function Customizes() {
                   onChange={(e) => {
                     let input = e.target.value;
                     // Remove leading zeros if the input starts with 0
-                    if (input.length > 1 && input[0] === '0') {
-                      input = input.replace(/^0+/, '');
+                    if (input.length > 1 && input[0] === "0") {
+                      input = input.replace(/^0+/, "");
                     }
                     // Regular expression to match only numbers
                     const regex = /^[0-9\b]+$/;
-                    if (input === '' || regex.test(input)) {
+                    if (input === "" || regex.test(input)) {
                       // If input is empty or contains only numbers, update state
                       setLong(input);
                     }
@@ -356,8 +430,11 @@ export default function Customizes() {
           </div>
           <div className="item">
             <h5>Floor</h5>
-            {[1, 2, 3].map(floor => (
-              <div className="form-check form-check-inline radio" key={`floorRadio${floor}`}>
+            {[1, 2, 3].map((floor) => (
+              <div
+                className="form-check form-check-inline radio"
+                key={`floorRadio${floor}`}
+              >
                 <input
                   className="form-check-input"
                   type="radio"
@@ -369,7 +446,10 @@ export default function Customizes() {
                   value={floor}
                   checked={selectedFloor === floor}
                 />
-                <label className="form-check-label" htmlFor={`floorRadio${floor}`}>
+                <label
+                  className="form-check-label"
+                  htmlFor={`floorRadio${floor}`}
+                >
                   {`${floor} Floor`}
                 </label>
               </div>
@@ -671,53 +751,46 @@ export default function Customizes() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {
-                          (selectedPart == 1 || selectedPart == 3) ?
-                            (
-
-                              <TableRow
-                                sx={{
-                                  "&:last-child td, &:last-child th": { border: 0 },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  Phần thô
-                                </TableCell>
-                                <TableCell align="center">{currentPart?.rawPart}</TableCell>
-                                <TableCell align="center">
-                                  {wide} x {long}
-                                </TableCell>
-                                <TableCell align="center">
-                                  {wide *
-                                    long *
-                                    currentPart?.rawPart}
-                                </TableCell>
-                              </TableRow>
-                            ) : null
-                        }
-                        {
-                          (selectedPart == 2 || selectedPart == 3) ?
-                            (
-                              <TableRow
-                                sx={{
-                                  "&:last-child td, &:last-child th": { border: 0 },
-                                }}
-                              >
-                                <TableCell component="th" scope="row">
-                                  Phần hoàn thiện
-                                </TableCell>
-                                <TableCell align="center">{currentPart?.finishingPart}</TableCell>
-                                <TableCell align="center">
-                                  {wide} x {long}
-                                </TableCell>
-                                <TableCell align="center">
-                                  {wide *
-                                    long *
-                                    currentPart?.finishingPart}
-                                </TableCell>
-                              </TableRow>
-                            ) : null
-                        }
+                        {selectedPart == 1 || selectedPart == 3 ? (
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              Phần thô
+                            </TableCell>
+                            <TableCell align="center">
+                              {currentPart?.rawPart}
+                            </TableCell>
+                            <TableCell align="center">
+                              {wide} x {long}
+                            </TableCell>
+                            <TableCell align="center">
+                              {wide * long * currentPart?.rawPart}
+                            </TableCell>
+                          </TableRow>
+                        ) : null}
+                        {selectedPart == 2 || selectedPart == 3 ? (
+                          <TableRow
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              Phần hoàn thiện
+                            </TableCell>
+                            <TableCell align="center">
+                              {currentPart?.finishingPart}
+                            </TableCell>
+                            <TableCell align="center">
+                              {wide} x {long}
+                            </TableCell>
+                            <TableCell align="center">
+                              {wide * long * currentPart?.finishingPart}
+                            </TableCell>
+                          </TableRow>
+                        ) : null}
                         <TableRow
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
@@ -729,9 +802,14 @@ export default function Customizes() {
                           <TableCell align="center">
                             {paintWall?.price}
                           </TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.paintWall.quantity) ? (currentBlueprint?.materials?.paintWall.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {paintWall?.price *  (currentBlueprint?.materials?.paintWall.quantity)}
+                            {currentBlueprint?.materials?.paintWall.quantity
+                              ? currentBlueprint?.materials?.paintWall.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {paintWall?.price *
+                              currentBlueprint?.materials?.paintWall.quantity}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -743,9 +821,14 @@ export default function Customizes() {
                             Mái nhà
                           </TableCell>
                           <TableCell align="center">{roof?.price}</TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.roof.quantity) ? (currentBlueprint?.materials?.roof.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {roof?.price *  (currentBlueprint?.materials?.roof.quantity)}
+                            {currentBlueprint?.materials?.roof.quantity
+                              ? currentBlueprint?.materials?.roof.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {roof?.price *
+                              currentBlueprint?.materials?.roof.quantity}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -757,9 +840,14 @@ export default function Customizes() {
                             Cửa đi
                           </TableCell>
                           <TableCell align="center">{door?.price}</TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.door.quantity) ? (currentBlueprint?.materials?.door.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {door?.price *  (currentBlueprint?.materials?.door.quantity)}
+                            {currentBlueprint?.materials?.door.quantity
+                              ? currentBlueprint?.materials?.door.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {door?.price *
+                              currentBlueprint?.materials?.door.quantity}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -771,9 +859,14 @@ export default function Customizes() {
                             Cửa sổ
                           </TableCell>
                           <TableCell align="center">{window?.price}</TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.window.quantity) ? (currentBlueprint?.materials?.window.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {window?.price *  (currentBlueprint?.materials?.window.quantity)}
+                            {currentBlueprint?.materials?.window.quantity
+                              ? currentBlueprint?.materials?.window.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {window?.price *
+                              currentBlueprint?.materials?.window.quantity}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -787,9 +880,14 @@ export default function Customizes() {
                           <TableCell align="center">
                             {wallTitle?.price}
                           </TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.wallTitle.quantity) ? (currentBlueprint?.materials?.wallTitle.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {wallTitle?.price *  (currentBlueprint?.materials?.wallTitle.quantity)}
+                            {currentBlueprint?.materials?.wallTitle.quantity
+                              ? currentBlueprint?.materials?.wallTitle.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {wallTitle?.price *
+                              currentBlueprint?.materials?.wallTitle.quantity}
                           </TableCell>
                         </TableRow>
                         <TableRow
@@ -803,9 +901,26 @@ export default function Customizes() {
                           <TableCell align="center">
                             {floorTitle?.price}
                           </TableCell>
-                          <TableCell align="center">{(currentBlueprint?.materials?.floorTitle.quantity) ? (currentBlueprint?.materials?.floorTitle.quantity) : "Discuss"}</TableCell>
                           <TableCell align="center">
-                            {floorTitle?.price *  (currentBlueprint?.materials?.floorTitle.quantity)}
+                            {currentBlueprint?.materials?.floorTitle.quantity
+                              ? currentBlueprint?.materials?.floorTitle.quantity
+                              : "Discuss"}
+                          </TableCell>
+                          <TableCell align="center">
+                            {floorTitle?.price *
+                              currentBlueprint?.materials?.floorTitle.quantity}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Floor</TableCell>
+                          <TableCell align="center">
+                            {"("}
+                            {(selectedFloor - 1) * 0.7 + 1}
+                            {")"}
+                          </TableCell>
+                          <TableCell align="center">{selectedFloor}</TableCell>
+                          <TableCell align="center">
+                            {calculatePrice() - calculatePriceNoFloor()}
                           </TableCell>
                         </TableRow>
                       </TableBody>
@@ -826,7 +941,7 @@ export default function Customizes() {
                           handleSubmit();
                         }}
                       >
-                        {(blueprintId) ? "Cập nhật" : "Xác nhận"}
+                        {blueprintId ? "Cập nhật" : "Xác nhận"}
                       </Button>
                     </div>
                   </div>
